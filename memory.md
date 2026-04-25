@@ -78,3 +78,41 @@ A secondary XSS fix was also missed: the flashcard **Listen** button used `oncli
 
 ### Next Recommended Improvement
 Add a **progress indicator** (e.g., "2 / 5 ✦") to the activity header so the child knows how many cards remain before the round completes.
+
+## 2026-04-25 Full Curriculum Expansion
+
+### Summary
+Replaced the starter curriculum (≤6 items per array) with a complete multi-grade curriculum across all subjects and both languages.
+
+### Items Added per Subject
+| Subject | Grade | EN items | ES items |
+|---------|-------|----------|----------|
+| ELA – letters  | K/G1/G2 | 26/20/20 | 25/20/20 |
+| ELA – match    | K/G1/G2 | 20/20/20 | 20/20/20 |
+| ELA – blend    | K/G1/G2 | 20/20/20 | 20/20/20 |
+| ELA – sentences| K/G1/G2 | 15/15/15 | 15/15/15 |
+| ELA – sight    | K/G1/G2 | 20/20/20 | 20/20/20 |
+| Math           | K/G1/G2 | 25/25/25 | 25/25/25 |
+| Science+Social | K/G1/G2 | 25/25/25 | 25/25/25 |
+
+**Grand total: 881 curriculum items**
+
+### Content Highlights
+- ELA K: Full A–Z alphabet, Dolch Pre-Primer sight words, 20 CVC blends
+- ELA G1: Digraphs (SH/CH/TH/WH/CK/NG), vowel teams, compound words, opposites
+- ELA G2: Vowel teams (AI/OA/EE/IGH/OW), prefixes/suffixes, grammar, multisyllabic blends
+- Math K: Counting, shapes, addition/subtraction within 5, patterns, odd/even
+- Math G1: Operations within 20, place value (tens/ones), time, fractions intro, measurement
+- Math G2: Operations within 1000, multiplication (2s/5s/10s), area/perimeter, fractions, 3D shapes, division
+- Science K: 5 senses, seasons, living/non-living, community helpers, push/pull, life cycles
+- Science G1: Life cycles, food chains, earth materials, light/sound, geography, US landmarks
+- Science G2: Water cycle, habitats, solar system, states of matter, simple machines, fossils, US history
+- ES ELA: Full Spanish alphabet (incl. Ñ), syllable blending, diphthongs, prefixes/suffixes in Spanish
+- ES Math/Science: Spanish translations of all EN content, culturally aligned
+
+### Areas for Future Expansion
+- Add 3rd grade (g3) tier across all subjects
+- Add more sentence types (question/exclamation) for comprehension
+- Add audio recordings for Spanish accented characters (á, é, í, ó, ú)
+- Add story-based reading passages (multi-sentence comprehension)
+- Add geometry and data/graphing for G2 math
