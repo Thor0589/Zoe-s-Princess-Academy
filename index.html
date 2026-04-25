@@ -266,116 +266,328 @@
     <script>
         // --- CALIFORNA CCSS & NGSS CURRICULUM DATA MATRIX ---
         // Data-first architecture. Add new objects here to scale the app.
-        const curriculum = {
+                const curriculum = {
             en: {
                 ela: {
                     k: {
-                        letters: [{ type: 'flashcard', item: 'Aa', desc: 'Apple', emoji: '🍎', audio: 'A says ah. Apple.' }],
-                        match: [{ type: 'quiz', q: 'Which rhymes with CAT?', options: ['HAT', 'DOG', 'SUN'], a: 'HAT', audio: 'Which word rhymes with cat?' }],
-                        blend: [{ type: 'blend', item: 'cat', sounds: ['c','a','t'], phonemes: ['kuh','ah','tuh'], emoji: '🐱' }],
-                        sentences: [{ type: 'sentence', text: 'I see a dog.', audio: 'I see a dog.' }],
-                        sight: [{ type: 'flashcard', item: 'the', desc: 'Sight Word', emoji: '👁️', audio: 'The word is the.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'Aa', desc: 'Apple',  emoji: '🍎', audio: 'A says ah. Apple.' },
+                            { type: 'flashcard', item: 'Bb', desc: 'Ball',   emoji: '🏀', audio: 'B says buh. Ball.' },
+                            { type: 'flashcard', item: 'Cc', desc: 'Cat',    emoji: '🐱', audio: 'C says kuh. Cat.' },
+                            { type: 'flashcard', item: 'Dd', desc: 'Dog',    emoji: '🐶', audio: 'D says duh. Dog.' },
+                            { type: 'flashcard', item: 'Ee', desc: 'Egg',    emoji: '🥚', audio: 'E says eh. Egg.' },
+                            { type: 'flashcard', item: 'Ff', desc: 'Fish',   emoji: '🐟', audio: 'F says fuh. Fish.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: 'Which rhymes with CAT?',  options: ['HAT',  'DOG', 'SUN'], a: 'HAT',  audio: 'Which word rhymes with cat?' },
+                            { type: 'quiz', q: 'Which rhymes with BIG?',  options: ['PIG',  'BAT', 'TEN'], a: 'PIG',  audio: 'Which word rhymes with big?' },
+                            { type: 'quiz', q: 'Which rhymes with SUN?',  options: ['RUN',  'MAP', 'BED'], a: 'RUN',  audio: 'Which word rhymes with sun?' },
+                            { type: 'quiz', q: 'Which rhymes with HOP?',  options: ['MOP',  'CAP', 'FIG'], a: 'MOP',  audio: 'Which word rhymes with hop?' },
+                            { type: 'quiz', q: 'Which rhymes with FAN?',  options: ['CAN',  'PIG', 'TOP'], a: 'CAN',  audio: 'Which word rhymes with fan?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'cat', sounds: ['c','a','t'], phonemes: ['kuh','ah','tuh'], emoji: '🐱' },
+                            { type: 'blend', item: 'dog', sounds: ['d','o','g'], phonemes: ['duh','oh','guh'], emoji: '🐶' },
+                            { type: 'blend', item: 'sun', sounds: ['s','u','n'], phonemes: ['suh','uh','nuh'], emoji: '☀️' },
+                            { type: 'blend', item: 'pig', sounds: ['p','i','g'], phonemes: ['puh','ih','guh'], emoji: '🐷' },
+                            { type: 'blend', item: 'cup', sounds: ['c','u','p'], phonemes: ['kuh','uh','puh'], emoji: '☕' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'I see a dog.',   audio: 'I see a dog.' },
+                            { type: 'sentence', text: 'I like to run.', audio: 'I like to run.' },
+                            { type: 'sentence', text: 'The cat is big.', audio: 'The cat is big.' },
+                            { type: 'sentence', text: 'We go to school.', audio: 'We go to school.' },
+                            { type: 'sentence', text: 'I can read a book.', audio: 'I can read a book.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'the', desc: 'Sight Word', emoji: '👁️', audio: 'The word is: the.' },
+                            { type: 'flashcard', item: 'a',   desc: 'Sight Word', emoji: '👁️', audio: 'The word is: a.' },
+                            { type: 'flashcard', item: 'is',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: is.' },
+                            { type: 'flashcard', item: 'I',   desc: 'Sight Word', emoji: '👁️', audio: 'The word is: I.' },
+                            { type: 'flashcard', item: 'see', desc: 'Sight Word', emoji: '👁️', audio: 'The word is: see.' },
+                            { type: 'flashcard', item: 'and', desc: 'Sight Word', emoji: '👁️', audio: 'The word is: and.' }
+                        ]
                     },
                     g1: {
-                        letters: [{ type: 'flashcard', item: 'SH', desc: 'Ship', emoji: '🚢', audio: 'S H says shh. Ship.' }],
-                        match: [{ type: 'quiz', q: 'Find the word: THE', options: ['A', 'THE', 'AND'], a: 'THE', audio: 'Find the sight word: the.' }],
-                        blend: [{ type: 'blend', item: 'dog', sounds: ['d','o','g'], phonemes: ['duh','ah','guh'], emoji: '🐶' }],
-                        sentences: [{ type: 'sentence', text: 'The dog ran fast.', audio: 'The dog ran fast.' }],
-                        sight: [{ type: 'flashcard', item: 'like', desc: 'Sight Word', emoji: '👁️', audio: 'The word is like.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'SH', desc: 'Ship',  emoji: '🚢', audio: 'S H says shh. Ship.' },
+                            { type: 'flashcard', item: 'CH', desc: 'Chair', emoji: '🪑', audio: 'C H says chh. Chair.' },
+                            { type: 'flashcard', item: 'TH', desc: 'Three', emoji: '3️⃣', audio: 'T H says thh. Three.' },
+                            { type: 'flashcard', item: 'WH', desc: 'Wheel', emoji: '🎡', audio: 'W H says wuh. Wheel.' },
+                            { type: 'flashcard', item: 'PH', desc: 'Phone', emoji: '📱', audio: 'P H says fuh. Phone.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: 'Find the sight word: THE', options: ['A', 'THE', 'AND'], a: 'THE', audio: 'Find the sight word: the.' },
+                            { type: 'quiz', q: 'Which rhymes with CAKE?',  options: ['LAKE', 'BIRD', 'FROG'], a: 'LAKE', audio: 'Which word rhymes with cake?' },
+                            { type: 'quiz', q: 'Which rhymes with RAIN?',  options: ['TRAIN', 'CLOUD', 'SNOW'], a: 'TRAIN', audio: 'Which word rhymes with rain?' },
+                            { type: 'quiz', q: 'Which rhymes with NIGHT?', options: ['LIGHT', 'MOON', 'STAR'], a: 'LIGHT', audio: 'Which word rhymes with night?' },
+                            { type: 'quiz', q: 'SUN + FLOWER = ?',         options: ['SUNFLOWER', 'MOONRISE', 'STARLIGHT'], a: 'SUNFLOWER', audio: 'Put sun and flower together. What word do you get?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'ship',  sounds: ['sh','i','p'],  phonemes: ['shh','ih','puh'], emoji: '🚢' },
+                            { type: 'blend', item: 'frog',  sounds: ['fr','o','g'],  phonemes: ['frr','oh','guh'], emoji: '🐸' },
+                            { type: 'blend', item: 'flag',  sounds: ['fl','a','g'],  phonemes: ['flh','ah','guh'], emoji: '🚩' },
+                            { type: 'blend', item: 'snap',  sounds: ['sn','a','p'],  phonemes: ['snn','ah','puh'], emoji: '👏' },
+                            { type: 'blend', item: 'drum',  sounds: ['dr','u','m'],  phonemes: ['drr','uh','mmm'], emoji: '🥁' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'The dog ran fast.',        audio: 'The dog ran fast.' },
+                            { type: 'sentence', text: 'She can read big books.',  audio: 'She can read big books.' },
+                            { type: 'sentence', text: 'We play at the park.',     audio: 'We play at the park.' },
+                            { type: 'sentence', text: 'I like big red apples.',   audio: 'I like big red apples.' },
+                            { type: 'sentence', text: 'My friend is very kind.',  audio: 'My friend is very kind.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'like',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: like.' },
+                            { type: 'flashcard', item: 'said',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: said.' },
+                            { type: 'flashcard', item: 'have',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: have.' },
+                            { type: 'flashcard', item: 'they',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: they.' },
+                            { type: 'flashcard', item: 'are',   desc: 'Sight Word', emoji: '👁️', audio: 'The word is: are.' },
+                            { type: 'flashcard', item: 'from',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: from.' }
+                        ]
                     },
                     g2: {
-                        letters: [{ type: 'flashcard', item: 'AI', desc: 'Rain', emoji: '🌧️', audio: 'A I says ay. Rain.' }],
-                        match: [{ type: 'quiz', q: 'What means "not happy"?', options: ['Unhappy', 'Happyful', 'Prehappy'], a: 'Unhappy', audio: 'Which word means not happy?' }],
-                        blend: [{ type: 'blend', item: 'rabbit', sounds: ['rab','bit'], phonemes: ['rab','bit'], emoji: '🐰' }],
-                        sentences: [{ type: 'sentence', text: 'The tiger ran in the rain.', audio: 'The tiger ran in the rain.' }],
-                        sight: [{ type: 'flashcard', item: 'because', desc: 'Sight Word', emoji: '👁️', audio: 'The word is because.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'AI',  desc: 'Rain',  emoji: '🌧️', audio: 'A I says ay. Rain.' },
+                            { type: 'flashcard', item: 'OA',  desc: 'Boat',  emoji: '⛵', audio: 'O A says oh. Boat.' },
+                            { type: 'flashcard', item: 'EE',  desc: 'Tree',  emoji: '🌳', audio: 'E E says ee. Tree.' },
+                            { type: 'flashcard', item: 'IGH', desc: 'Night', emoji: '🌙', audio: 'I G H says eye. Night.' },
+                            { type: 'flashcard', item: 'OW',  desc: 'Snow',  emoji: '❄️', audio: 'O W says oh. Snow.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: 'What means "not happy"?',    options: ['Unhappy', 'Happyful', 'Prehappy'], a: 'Unhappy',  audio: 'Which word means not happy?' },
+                            { type: 'quiz', q: 'What means "not kind"?',     options: ['Unkind',  'Kindless', 'Rekind'],   a: 'Unkind',   audio: 'Which word means not kind?' },
+                            { type: 'quiz', q: '"Re-" means...',             options: ['Again',   'Not',      'Before'],   a: 'Again',    audio: 'What does the prefix re mean?' },
+                            { type: 'quiz', q: 'SUN + SHINE = ?',            options: ['Sunshine','Moonglow', 'Starrise'], a: 'Sunshine', audio: 'Put sun and shine together. What word do you get?' },
+                            { type: 'quiz', q: 'TEACH + ER = ?',             options: ['Teacher', 'Teaches',  'Teaching'], a: 'Teacher',  audio: 'Add er to teach. What word do you get?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'rabbit', sounds: ['rab','bit'],    phonemes: ['rab','bit'],     emoji: '🐰' },
+                            { type: 'blend', item: 'basket', sounds: ['bas','ket'],    phonemes: ['bas','ket'],     emoji: '🧺' },
+                            { type: 'blend', item: 'magic',  sounds: ['ma','gic'],     phonemes: ['mah','jik'],     emoji: '🪄' },
+                            { type: 'blend', item: 'dragon', sounds: ['dra','gon'],    phonemes: ['drah','gun'],    emoji: '🐉' },
+                            { type: 'blend', item: 'planet', sounds: ['plan','et'],    phonemes: ['plan','et'],     emoji: '🪐' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'The rabbit hopped over the log.',      audio: 'The rabbit hopped over the log.' },
+                            { type: 'sentence', text: 'We saw a big rainbow today.',           audio: 'We saw a big rainbow today.' },
+                            { type: 'sentence', text: 'She read a book about animals.',        audio: 'She read a book about animals.' },
+                            { type: 'sentence', text: 'They planted a garden together.',       audio: 'They planted a garden together.' },
+                            { type: 'sentence', text: 'The dragon flew over the tall castle.', audio: 'The dragon flew over the tall castle.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'every',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: every.' },
+                            { type: 'flashcard', item: 'found',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: found.' },
+                            { type: 'flashcard', item: 'still',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: still.' },
+                            { type: 'flashcard', item: 'learn',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: learn.' },
+                            { type: 'flashcard', item: 'should', desc: 'Sight Word', emoji: '👁️', audio: 'The word is: should.' },
+                            { type: 'flashcard', item: 'great',  desc: 'Sight Word', emoji: '👁️', audio: 'The word is: great.' }
+                        ]
                     }
                 },
                 math: {
                     k: [
                         { type: 'flashcard', item: '1, 2, 3', desc: 'Counting', emoji: '🔢', audio: 'One, two, three!' },
-                        { type: 'quiz', q: 'What shape is round?', options: ['Circle', 'Square', 'Triangle'], a: 'Circle', emoji: '🔴', audio: 'What shape is perfectly round?' },
-                        { type: 'quiz', q: '1 + 1 = ?', options: ['2', '3', '4'], a: '2', audio: 'What is one plus one?' }
+                        { type: 'quiz', q: 'What shape is round?',   options: ['Circle',   'Square',  'Triangle'], a: 'Circle',  emoji: '🔴', audio: 'What shape is perfectly round?' },
+                        { type: 'quiz', q: '1 + 1 = ?',              options: ['2',        '3',       '4'],        a: '2',       audio: 'What is one plus one?' },
+                        { type: 'quiz', q: 'How many fingers? ✋',    options: ['5',        '4',       '6'],        a: '5',       emoji: '✋', audio: 'How many fingers on one hand?' },
+                        { type: 'quiz', q: 'Which is bigger?',       options: ['10',       '5',       '3'],        a: '10',      audio: 'Which number is bigger: ten, five, or three?' }
                     ],
                     g1: [
-                        { type: 'quiz', q: '10 + 5 = ?', options: ['12', '15', '20'], a: '15', audio: 'What is ten plus five?' },
-                        { type: 'quiz', q: 'How many Tens in 34?', options: ['3', '4', '7'], a: '3', audio: 'How many tens are in the number thirty four?' }
+                        { type: 'quiz', q: '10 + 5 = ?',             options: ['12',       '15',      '20'],       a: '15',      audio: 'What is ten plus five?' },
+                        { type: 'quiz', q: 'How many Tens in 34?',   options: ['3',        '4',       '7'],        a: '3',       audio: 'How many tens are in the number thirty four?' },
+                        { type: 'quiz', q: '20 − 8 = ?',             options: ['12',       '14',      '10'],       a: '12',      audio: 'What is twenty minus eight?' },
+                        { type: 'quiz', q: 'What is half of 10?',    options: ['5',        '4',       '6'],        a: '5',       audio: 'What is half of ten?' }
                     ],
                     g2: [
-                        { type: 'quiz', q: '50 + 40 = ?', options: ['80', '90', '100'], a: '90', audio: 'What is fifty plus forty?' },
-                        { type: 'quiz', q: 'Which is One Hundred?', options: ['10', '100', '1000'], a: '100', audio: 'Which number is one hundred?' }
+                        { type: 'quiz', q: '50 + 40 = ?',            options: ['80',       '90',      '100'],      a: '90',      audio: 'What is fifty plus forty?' },
+                        { type: 'quiz', q: 'Which is One Hundred?',  options: ['10',       '100',     '1000'],     a: '100',     audio: 'Which number is one hundred?' },
+                        { type: 'quiz', q: '7 × 3 = ?',              options: ['21',       '24',      '18'],       a: '21',      audio: 'What is seven times three?' },
+                        { type: 'quiz', q: '100 − 35 = ?',           options: ['65',       '55',      '75'],       a: '65',      audio: 'What is one hundred minus thirty five?' }
                     ]
                 },
                 science: {
                     k: [
-                        { type: 'quiz', q: 'What makes a wagon move?', options: ['A Pull', 'A Sleep', 'A Color'], a: 'A Pull', emoji: '🛻', audio: 'What makes a wagon move?' },
-                        { type: 'quiz', q: 'What do plants need?', options: ['Water', 'Toys', 'Milk'], a: 'Water', emoji: '🌻', audio: 'What do plants need to grow?' }
+                        { type: 'quiz', q: 'What makes a wagon move?', options: ['A Pull', 'A Sleep', 'A Color'], a: 'A Pull', emoji: '🛻',  audio: 'What makes a wagon move?' },
+                        { type: 'quiz', q: 'What do plants need?',      options: ['Water',  'Toys',    'Milk'],    a: 'Water',  emoji: '🌻',  audio: 'What do plants need to grow?' },
+                        { type: 'quiz', q: 'What is the sky color?',    options: ['Blue',   'Green',   'Red'],     a: 'Blue',   emoji: '🌤️', audio: 'What color is the sky on a clear day?' },
+                        { type: 'quiz', q: 'Animals that hatch from eggs?', options: ['Birds', 'Dogs', 'Cats'],   a: 'Birds',  emoji: '🐣',  audio: 'Which animals hatch from eggs?' }
                     ],
                     g1: [
-                        { type: 'quiz', q: 'What falls from clouds?', options: ['Rain', 'Rocks', 'Leaves'], a: 'Rain', emoji: '🌧️', audio: 'What falls from clouds?' },
-                        { type: 'quiz', q: 'Which is the US Bird?', options: ['Eagle', 'Pigeon', 'Duck'], a: 'Eagle', emoji: '🦅', audio: 'Which bird is the national symbol of the United States?' }
+                        { type: 'quiz', q: 'What falls from clouds?',   options: ['Rain',   'Rocks',  'Leaves'], a: 'Rain',   emoji: '🌧️', audio: 'What falls from clouds?' },
+                        { type: 'quiz', q: 'Which is the US Bird?',     options: ['Eagle',  'Pigeon', 'Duck'],   a: 'Eagle',  emoji: '🦅',  audio: 'Which bird is the national symbol of the United States?' },
+                        { type: 'quiz', q: 'The Sun gives us...',       options: ['Light',  'Rain',   'Rocks'],  a: 'Light',  emoji: '☀️', audio: 'What does the sun give us?' },
+                        { type: 'quiz', q: 'Where do fish live?',       options: ['Water',  'Trees',  'Sky'],    a: 'Water',  emoji: '🐟',  audio: 'Where do fish live?' }
                     ],
                     g2: [
-                        { type: 'quiz', q: 'Ice melting is...', options: ['A Change', 'A Plant', 'An Animal'], a: 'A Change', emoji: '🧊', audio: 'What happens when ice melts?' },
-                        { type: 'quiz', q: 'Where do bears live?', options: ['Forest', 'Ocean', 'Sky'], a: 'Forest', emoji: '🐻', audio: 'Where is a natural habitat for a bear?' }
+                        { type: 'quiz', q: 'Ice melting is...',         options: ['A Change', 'A Plant',  'An Animal'],  a: 'A Change',  emoji: '🧊', audio: 'What happens when ice melts?' },
+                        { type: 'quiz', q: 'Where do bears live?',      options: ['Forest',   'Ocean',    'Sky'],        a: 'Forest',    emoji: '🐻', audio: 'Where is a natural habitat for a bear?' },
+                        { type: 'quiz', q: 'Earth goes around the...', options: ['Sun',      'Moon',     'Stars'],      a: 'Sun',       emoji: '🌍', audio: 'What does Earth orbit around?' },
+                        { type: 'quiz', q: 'Herbivores eat...',         options: ['Plants',   'Animals',  'Rocks'],      a: 'Plants',    emoji: '🦒', audio: 'What do herbivores eat?' }
                     ]
                 }
             },
             es: {
                 ela: {
                     k: {
-                        letters: [{ type: 'flashcard', item: 'Ma', desc: 'Mamá', emoji: '👩', audio: 'Eme con a suena ma. Mamá.' }],
-                        match: [{ type: 'quiz', q: '¿Qué rima con GATO?', options: ['PATO', 'PERRO', 'SOL'], a: 'PATO', audio: '¿Qué palabra rima con gato?' }],
-                        blend: [{ type: 'blend', item: 'pato', sounds: ['pa','to'], phonemes: ['pah','toh'], emoji: '🦆' }],
-                        sentences: [{ type: 'sentence', text: 'El pato nada.', audio: 'El pato nada.' }],
-                        sight: [{ type: 'flashcard', item: 'el', desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es el.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'Ma', desc: 'Mamá',  emoji: '👩', audio: 'Eme con a suena ma. Mamá.' },
+                            { type: 'flashcard', item: 'Pa', desc: 'Papá',  emoji: '👨', audio: 'Pe con a suena pa. Papá.' },
+                            { type: 'flashcard', item: 'Sa', desc: 'Sapo',  emoji: '🐸', audio: 'Ese con a suena sa. Sapo.' },
+                            { type: 'flashcard', item: 'La', desc: 'Luna',  emoji: '🌙', audio: 'Ele con a suena la. Luna.' },
+                            { type: 'flashcard', item: 'Na', desc: 'Nido',  emoji: '🪹', audio: 'Ene con a suena na. Nido.' },
+                            { type: 'flashcard', item: 'Da', desc: 'Dado',  emoji: '🎲', audio: 'De con a suena da. Dado.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: '¿Qué rima con GATO?',   options: ['PATO',  'PERRO', 'SOL'],  a: 'PATO',  audio: '¿Qué palabra rima con gato?' },
+                            { type: 'quiz', q: '¿Qué rima con MESA?',   options: ['FRESA', 'LIBRO', 'AGUA'], a: 'FRESA', audio: '¿Qué palabra rima con mesa?' },
+                            { type: 'quiz', q: '¿Qué rima con SOL?',    options: ['COL',   'MAR',   'RÍO'],  a: 'COL',   audio: '¿Qué palabra rima con sol?' },
+                            { type: 'quiz', q: '¿Qué rima con PAN?',    options: ['CAN',   'PAZ',   'LUZ'],  a: 'CAN',   audio: '¿Qué palabra rima con pan?' },
+                            { type: 'quiz', q: '¿Qué rima con OJO?',    options: ['ROJO',  'AZUL',  'VERDE'], a: 'ROJO', audio: '¿Qué palabra rima con ojo?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'pato', sounds: ['pa','to'],   phonemes: ['pah','toh'],    emoji: '🦆' },
+                            { type: 'blend', item: 'mano', sounds: ['ma','no'],   phonemes: ['mah','noh'],    emoji: '✋' },
+                            { type: 'blend', item: 'dedo', sounds: ['de','do'],   phonemes: ['deh','doh'],    emoji: '👆' },
+                            { type: 'blend', item: 'luna', sounds: ['lu','na'],   phonemes: ['luh','nah'],    emoji: '🌙' },
+                            { type: 'blend', item: 'nido', sounds: ['ni','do'],   phonemes: ['nih','doh'],    emoji: '🪹' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'El pato nada.',         audio: 'El pato nada.' },
+                            { type: 'sentence', text: 'La luna es bonita.',    audio: 'La luna es bonita.' },
+                            { type: 'sentence', text: 'Mi mamá es buena.',     audio: 'Mi mamá es buena.' },
+                            { type: 'sentence', text: 'El gato es negro.',     audio: 'El gato es negro.' },
+                            { type: 'sentence', text: 'Yo veo el sol.',        audio: 'Yo veo el sol.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'el',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: el.' },
+                            { type: 'flashcard', item: 'la',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: la.' },
+                            { type: 'flashcard', item: 'de',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: de.' },
+                            { type: 'flashcard', item: 'mi',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: mi.' },
+                            { type: 'flashcard', item: 'es',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: es.' },
+                            { type: 'flashcard', item: 'un',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: un.' }
+                        ]
                     },
                     g1: {
-                        letters: [{ type: 'flashcard', item: 'SA', desc: 'Sapo', emoji: '🐸', audio: 'Ese con a suena sa. Sapo.' }],
-                        match: [{ type: 'quiz', q: 'Encuentra: EL', options: ['EL', 'LA', 'UN'], a: 'EL', audio: 'Encuentra la palabra: el.' }],
-                        blend: [{ type: 'blend', item: 'gato', sounds: ['ga','to'], phonemes: ['gah','toh'], emoji: '🐱' }],
-                        sentences: [{ type: 'sentence', text: 'El gato azul.', audio: 'El gato azul.' }],
-                        sight: [{ type: 'flashcard', item: 'de', desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es de.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'SA', desc: 'Sapo',   emoji: '🐸', audio: 'Ese con a suena sa. Sapo.' },
+                            { type: 'flashcard', item: 'RE', desc: 'Reina',  emoji: '👑', audio: 'Erre con e suena re. Reina.' },
+                            { type: 'flashcard', item: 'MO', desc: 'Mono',   emoji: '🐒', audio: 'Eme con o suena mo. Mono.' },
+                            { type: 'flashcard', item: 'FI', desc: 'Fila',   emoji: '🔢', audio: 'Efe con i suena fi. Fila.' },
+                            { type: 'flashcard', item: 'BU', desc: 'Búho',   emoji: '🦉', audio: 'Be con u suena bu. Búho.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: 'Encuentra la palabra: EL',    options: ['EL',  'LA', 'UN'],    a: 'EL',   audio: 'Encuentra la palabra: el.' },
+                            { type: 'quiz', q: '¿Qué rima con TAZA?',         options: ['RAZA','MAR','SOL'],   a: 'RAZA', audio: '¿Qué palabra rima con taza?' },
+                            { type: 'quiz', q: '¿Qué rima con BOCA?',         options: ['LOCA','MESA','RÍO'],  a: 'LOCA', audio: '¿Qué palabra rima con boca?' },
+                            { type: 'quiz', q: '¿Qué rima con FLOR?',         options: ['COLOR','LIBRO','PAN'],a: 'COLOR',audio: '¿Qué palabra rima con flor?' },
+                            { type: 'quiz', q: 'SOL + DADO = ?',              options: ['SOLDADO','SOLMAR','DADOSOL'], a: 'SOLDADO', audio: 'Junta sol y dado. ¿Qué palabra forman?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'gato',  sounds: ['ga','to'],   phonemes: ['gah','toh'],   emoji: '🐱' },
+                            { type: 'blend', item: 'pollo', sounds: ['po','llo'],  phonemes: ['poh','yoh'],   emoji: '🐔' },
+                            { type: 'blend', item: 'fruta', sounds: ['fru','ta'],  phonemes: ['froo','tah'],  emoji: '🍎' },
+                            { type: 'blend', item: 'globo', sounds: ['glo','bo'],  phonemes: ['gloh','boh'],  emoji: '🎈' },
+                            { type: 'blend', item: 'plato', sounds: ['pla','to'],  phonemes: ['plah','toh'],  emoji: '🍽️' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'El gato azul.',             audio: 'El gato azul.' },
+                            { type: 'sentence', text: 'La niña lee un libro.',     audio: 'La niña lee un libro.' },
+                            { type: 'sentence', text: 'Vamos al parque hoy.',      audio: 'Vamos al parque hoy.' },
+                            { type: 'sentence', text: 'Mi amigo es muy bueno.',    audio: 'Mi amigo es muy bueno.' },
+                            { type: 'sentence', text: 'La fruta es muy rica.',     audio: 'La fruta es muy rica.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'que',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: que.' },
+                            { type: 'flashcard', item: 'en',   desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: en.' },
+                            { type: 'flashcard', item: 'los',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: los.' },
+                            { type: 'flashcard', item: 'con',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: con.' },
+                            { type: 'flashcard', item: 'una',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: una.' },
+                            { type: 'flashcard', item: 'por',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: por.' }
+                        ]
                     },
                     g2: {
-                        letters: [{ type: 'flashcard', item: 'BRA', desc: 'Brazo', emoji: '💪', audio: 'B R A suena bra. Brazo.' }],
-                        match: [{ type: 'quiz', q: '¿Qué significa "deshacer"?', options: ['No hacer', 'Hacer más', 'Brincar'], a: 'No hacer', audio: '¿Qué significa la palabra deshacer?' }],
-                        blend: [{ type: 'blend', item: 'escuela', sounds: ['es','cue','la'], phonemes: ['es','kweh','lah'], emoji: '🏫' }],
-                        sentences: [{ type: 'sentence', text: 'Mi familia va a la escuela.', audio: 'Mi familia va a la escuela.' }],
-                        sight: [{ type: 'flashcard', item: 'está', desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es está.' }]
+                        letters: [
+                            { type: 'flashcard', item: 'BRA', desc: 'Brazo',    emoji: '💪', audio: 'B R A suena bra. Brazo.' },
+                            { type: 'flashcard', item: 'TRE', desc: 'Tren',     emoji: '🚆', audio: 'T R E suena tre. Tren.' },
+                            { type: 'flashcard', item: 'FLO', desc: 'Flor',     emoji: '🌸', audio: 'F L O suena flo. Flor.' },
+                            { type: 'flashcard', item: 'PLA', desc: 'Plato',    emoji: '🍽️', audio: 'P L A suena pla. Plato.' },
+                            { type: 'flashcard', item: 'CRU', desc: 'Cruz',     emoji: '✝️', audio: 'C R U suena cru. Cruz.' }
+                        ],
+                        match: [
+                            { type: 'quiz', q: '¿Qué significa "deshacer"?',  options: ['No hacer', 'Hacer más', 'Brincar'],    a: 'No hacer',   audio: '¿Qué significa la palabra deshacer?' },
+                            { type: 'quiz', q: '"Re-" significa...',          options: ['De nuevo', 'Sin',       'Antes de'],   a: 'De nuevo',   audio: '¿Qué significa el prefijo re?' },
+                            { type: 'quiz', q: 'PORTA + DOR = ?',             options: ['Portador', 'Portamar', 'Portasol'],   a: 'Portador',   audio: 'Junta porta y dor. ¿Qué palabra forman?' },
+                            { type: 'quiz', q: '¿Qué significa "inútil"?',   options: ['Sin uso', 'Muy útil',   'Nuevo uso'],  a: 'Sin uso',    audio: '¿Qué significa la palabra inútil?' },
+                            { type: 'quiz', q: 'SOL + DAD = ?',               options: ['Soledad', 'Soldado',   'Soleado'],    a: 'Soledad',    audio: 'Junta sol y dad. ¿Qué palabra forman?' }
+                        ],
+                        blend: [
+                            { type: 'blend', item: 'escuela',  sounds: ['es','cue','la'],    phonemes: ['es','kweh','lah'],   emoji: '🏫' },
+                            { type: 'blend', item: 'estrella', sounds: ['es','tre','lla'],   phonemes: ['es','treh','yah'],   emoji: '⭐' },
+                            { type: 'blend', item: 'pueblo',   sounds: ['pue','blo'],        phonemes: ['pweh','bloh'],       emoji: '🏘️' },
+                            { type: 'blend', item: 'bloque',   sounds: ['blo','que'],        phonemes: ['bloh','keh'],        emoji: '🧱' },
+                            { type: 'blend', item: 'dragón',   sounds: ['dra','gón'],        phonemes: ['drah','gohn'],       emoji: '🐉' }
+                        ],
+                        sentences: [
+                            { type: 'sentence', text: 'Mi familia va a la escuela.',            audio: 'Mi familia va a la escuela.' },
+                            { type: 'sentence', text: 'El cielo está lleno de estrellas.',      audio: 'El cielo está lleno de estrellas.' },
+                            { type: 'sentence', text: 'Ella leyó un libro de animales.',        audio: 'Ella leyó un libro de animales.' },
+                            { type: 'sentence', text: 'Plantamos flores en el jardín.',         audio: 'Plantamos flores en el jardín.' },
+                            { type: 'sentence', text: 'El dragón voló sobre el gran castillo.', audio: 'El dragón voló sobre el gran castillo.' }
+                        ],
+                        sight: [
+                            { type: 'flashcard', item: 'está',    desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: está.' },
+                            { type: 'flashcard', item: 'pero',    desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: pero.' },
+                            { type: 'flashcard', item: 'cuando',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: cuando.' },
+                            { type: 'flashcard', item: 'todo',    desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: todo.' },
+                            { type: 'flashcard', item: 'porque',  desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: porque.' },
+                            { type: 'flashcard', item: 'siempre', desc: 'Palabra Clave', emoji: '👁️', audio: 'La palabra es: siempre.' }
+                        ]
                     }
                 },
                 math: {
                     k: [
                         { type: 'flashcard', item: '1, 2, 3', desc: 'Contar', emoji: '🔢', audio: '¡Uno, dos, tres!' },
-                        { type: 'quiz', q: '¿Qué figura es redonda?', options: ['Círculo', 'Cuadrado', 'Triángulo'], a: 'Círculo', emoji: '🔴', audio: '¿Qué figura es perfectamente redonda?' },
-                        { type: 'quiz', q: '1 + 1 = ?', options: ['2', '3', '4'], a: '2', audio: '¿Cuánto es uno más uno?' }
+                        { type: 'quiz', q: '¿Qué figura es redonda?',    options: ['Círculo', 'Cuadrado', 'Triángulo'], a: 'Círculo', emoji: '🔴', audio: '¿Qué figura es perfectamente redonda?' },
+                        { type: 'quiz', q: '1 + 1 = ?',                  options: ['2',       '3',        '4'],         a: '2',       audio: '¿Cuánto es uno más uno?' },
+                        { type: 'quiz', q: '¿Cuántos dedos? ✋',          options: ['5',       '4',        '6'],         a: '5',       emoji: '✋', audio: '¿Cuántos dedos hay en una mano?' },
+                        { type: 'quiz', q: '¿Cuál es mayor?',            options: ['10',      '5',        '3'],         a: '10',      audio: '¿Cuál número es mayor: diez, cinco o tres?' }
                     ],
                     g1: [
-                        { type: 'quiz', q: '10 + 5 = ?', options: ['12', '15', '20'], a: '15', audio: '¿Cuánto es diez más cinco?' },
-                        { type: 'quiz', q: '¿Cuántas decenas hay en 34?', options: ['3', '4', '7'], a: '3', audio: '¿Cuántas decenas hay en el número treinta y cuatro?' }
+                        { type: 'quiz', q: '10 + 5 = ?',                 options: ['12',      '15',       '20'],        a: '15',      audio: '¿Cuánto es diez más cinco?' },
+                        { type: 'quiz', q: '¿Cuántas decenas hay en 34?', options: ['3',      '4',        '7'],         a: '3',       audio: '¿Cuántas decenas hay en el número treinta y cuatro?' },
+                        { type: 'quiz', q: '20 − 8 = ?',                 options: ['12',      '14',       '10'],        a: '12',      audio: '¿Cuánto es veinte menos ocho?' },
+                        { type: 'quiz', q: '¿La mitad de 10?',           options: ['5',       '4',        '6'],         a: '5',       audio: '¿Cuál es la mitad de diez?' }
                     ],
                     g2: [
-                        { type: 'quiz', q: '50 + 40 = ?', options: ['80', '90', '100'], a: '90', audio: '¿Cuánto es cincuenta más cuarenta?' },
-                        { type: 'quiz', q: '¿Cuál es Cien?', options: ['10', '100', '1000'], a: '100', audio: '¿Qué número es cien?' }
+                        { type: 'quiz', q: '50 + 40 = ?',                options: ['80',      '90',       '100'],       a: '90',      audio: '¿Cuánto es cincuenta más cuarenta?' },
+                        { type: 'quiz', q: '¿Cuál es Cien?',             options: ['10',      '100',      '1000'],      a: '100',     audio: '¿Qué número es cien?' },
+                        { type: 'quiz', q: '7 × 3 = ?',                  options: ['21',      '24',       '18'],        a: '21',      audio: '¿Cuánto es siete por tres?' },
+                        { type: 'quiz', q: '100 − 35 = ?',               options: ['65',      '55',       '75'],        a: '65',      audio: '¿Cuánto es cien menos treinta y cinco?' }
                     ]
                 },
                 science: {
                     k: [
-                        { type: 'quiz', q: '¿Qué mueve un carrito?', options: ['Empujar', 'Dormir', 'Color'], a: 'Empujar', emoji: '🛻', audio: '¿Qué hace que un carrito se mueva?' },
-                        { type: 'quiz', q: '¿Qué necesitan las plantas?', options: ['Agua', 'Juguetes', 'Leche'], a: 'Agua', emoji: '🌻', audio: '¿Qué necesitan las plantas para crecer?' }
+                        { type: 'quiz', q: '¿Qué mueve un carrito?',      options: ['Empujar', 'Dormir', 'Color'],  a: 'Empujar', emoji: '🛻',  audio: '¿Qué hace que un carrito se mueva?' },
+                        { type: 'quiz', q: '¿Qué necesitan las plantas?', options: ['Agua',    'Juguetes','Leche'],  a: 'Agua',    emoji: '🌻',  audio: '¿Qué necesitan las plantas para crecer?' },
+                        { type: 'quiz', q: '¿De qué color es el cielo?',  options: ['Azul',    'Verde',   'Rojo'],  a: 'Azul',    emoji: '🌤️', audio: '¿De qué color es el cielo en un día despejado?' },
+                        { type: 'quiz', q: '¿Qué animales nacen del huevo?', options: ['Pájaros','Perros','Gatos'], a: 'Pájaros', emoji: '🐣',  audio: '¿Qué animales nacen de un huevo?' }
                     ],
                     g1: [
-                        { type: 'quiz', q: '¿Qué cae de las nubes?', options: ['Lluvia', 'Rocas', 'Hojas'], a: 'Lluvia', emoji: '🌧️', audio: '¿Qué cae de las nubes?' },
-                        { type: 'quiz', q: 'Símbolo de EE. UU.', options: ['Águila', 'Paloma', 'Pato'], a: 'Águila', emoji: '🦅', audio: '¿Qué ave es el símbolo nacional de los Estados Unidos?' }
+                        { type: 'quiz', q: '¿Qué cae de las nubes?',     options: ['Lluvia', 'Rocas',   'Hojas'], a: 'Lluvia',   emoji: '🌧️', audio: '¿Qué cae de las nubes?' },
+                        { type: 'quiz', q: 'Símbolo de EE. UU.',          options: ['Águila', 'Paloma',  'Pato'],  a: 'Águila',   emoji: '🦅',  audio: '¿Qué ave es el símbolo nacional de los Estados Unidos?' },
+                        { type: 'quiz', q: 'El Sol nos da...',            options: ['Luz',    'Lluvia',  'Rocas'], a: 'Luz',      emoji: '☀️', audio: '¿Qué nos da el sol?' },
+                        { type: 'quiz', q: '¿Dónde viven los peces?',    options: ['Agua',   'Árboles', 'Cielo'], a: 'Agua',     emoji: '🐟',  audio: '¿Dónde viven los peces?' }
                     ],
                     g2: [
                         { type: 'quiz', q: 'El hielo que se derrite es...', options: ['Un Cambio', 'Una Planta', 'Un Animal'], a: 'Un Cambio', emoji: '🧊', audio: '¿Qué pasa cuando el hielo se derrite?' },
-                        { type: 'quiz', q: '¿Dónde viven los osos?', options: ['Bosque', 'Océano', 'Cielo'], a: 'Bosque', emoji: '🐻', audio: '¿Dónde viven los osos?' }
+                        { type: 'quiz', q: '¿Dónde viven los osos?',        options: ['Bosque',    'Océano',    'Cielo'],      a: 'Bosque',    emoji: '🐻', audio: '¿Dónde viven los osos?' },
+                        { type: 'quiz', q: 'La Tierra gira alrededor del...',options: ['Sol',      'Luna',     'Estrellas'],  a: 'Sol',       emoji: '🌍', audio: '¿Alrededor de qué orbita la Tierra?' },
+                        { type: 'quiz', q: 'Los herbívoros comen...',        options: ['Plantas',   'Animales',  'Rocas'],      a: 'Plantas',   emoji: '🦒', audio: '¿Qué comen los herbívoros?' }
                     ]
                 }
             }
-        };
+        };;
 
         // --- GLOBAL STATE ---
         let state = {
@@ -819,8 +1031,14 @@
         function renderActivity(container) {
             const t = uiText[state.lang];
             const princess = state.princess;
-            const dataset = state.subject === 'ela' ? curriculum[state.lang].ela[state.grade][state.elaCategory] : curriculum[state.lang][state.subject][state.grade];
-            const data = dataset[state.activityIndex];
+            const dataset = state.subject === 'ela'
+                ? curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory]
+                : curriculum[state.lang]?.[state.subject]?.[state.grade];
+            if (!dataset || dataset.length === 0) {
+                container.innerHTML = `<div class="text-center pt-24"><p class="text-3xl font-bold text-slate-500">✨ More activities coming soon!</p><button onclick="navigate('hub')" class="mt-8 btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-4 rounded-full">${uiText[state.lang].back}</button></div>`;
+                return;
+            }
+            const data = dataset[Math.min(state.activityIndex, dataset.length - 1)];
 
             const backTarget = state.subject === 'ela' ? 'elaHub' : 'gradeSelect';
             let html = `<button onclick="navigate('${backTarget}')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl z-20">${t.back}</button>`;
@@ -840,7 +1058,7 @@
                         <div class="text-4xl font-bold text-slate-600 mt-6">${data.desc}</div>
                     </div>
                     <div class="grid grid-cols-2 gap-6">
-                        <button onclick="speak('${data.audio}')" class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl py-6 rounded-[2rem] flex items-center justify-center space-x-2">
+                        <button onclick='speak(${jsString(data.audio)})' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl py-6 rounded-[2rem] flex items-center justify-center space-x-2">
                             <span>🔊</span> <span>${t.read}</span>
                         </button>
                         <button onclick="nextActivity()" class="btn-kid bg-blue-400 hover:bg-blue-500 text-white font-bold text-2xl py-6 rounded-[2rem]">${t.next}</button>
@@ -914,9 +1132,23 @@
         }
 
         window.nextActivity = function() {
-            const list = state.subject === 'ela' ? curriculum[state.lang].ela[state.grade][state.elaCategory] : curriculum[state.lang][state.subject][state.grade];
-            state.activityIndex = (state.activityIndex + 1) % list.length;
-            navigate('activity');
+            const list = state.subject === 'ela'
+                ? (curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory] || [])
+                : (curriculum[state.lang]?.[state.subject]?.[state.grade] || []);
+            if (list.length === 0) { navigate(state.subject === 'ela' ? 'elaHub' : 'gradeSelect'); return; }
+            const nextIndex = (state.activityIndex + 1) % list.length;
+            const wrapped = nextIndex < state.activityIndex || (state.activityIndex === 0 && list.length === 1);
+            state.activityIndex = nextIndex;
+            if (wrapped && list.length > 1) {
+                // Brief "round complete" toast before re-rendering
+                const toast = document.createElement('div');
+                toast.textContent = state.lang === 'en' ? '🌟 Round complete! Starting over…' : '🌟 ¡Ronda completa! Empezando de nuevo…';
+                toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#1e3a5f;padding:1rem 2rem;border-radius:2rem;font-size:1.5rem;font-weight:bold;z-index:999;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
+                document.body.appendChild(toast);
+                setTimeout(() => { document.body.removeChild(toast); navigate('activity'); }, 1400);
+            } else {
+                navigate('activity');
+            }
         }
 
         window.handleQuizAnswer = function(selected, target) {

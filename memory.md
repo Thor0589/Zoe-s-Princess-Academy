@@ -49,3 +49,32 @@ Applied fixes from security audit (equivalent to claude/init-project-review-lCuc
 - `blend` type: `onclick="speak('${data.item}')"` → `onclick='speak(${jsString(data.item)})'`
 
 Pattern: All data values in inline onclick handlers now go through the existing `jsString()` sanitizer (consistent with the already-correct `sentence` type).
+
+## 2026-04-25 Button/Navigation Audit & Fix
+
+### Root Cause
+Every ELA curriculum array contained exactly **1 item**. `nextActivity()` computed `(0 + 1) % 1 = 0`, kept `activityIndex` at 0, and re-rendered the same card. The activity re-appeared (with pop animation) but content was identical — looked dead.
+
+A secondary XSS fix was also missed: the flashcard **Listen** button used `onclick="speak('${data.audio}')"` instead of `jsString()`.
+
+### Buttons Checked
+- Hub: subject cards (Reading ELA, Math, Science, Spanish/language toggle) ✓
+- Grade select: K / Grade 1 / Grade 2 / Back ✓
+- ELA Hub: Letters, Match, Blend, Sentences, Sight Words, Back ✓
+- Activity: Next (all types), Back, Listen/Speak, Quiz answers, clickable card ✓
+- Progress: Back-to-hub ✓
+- Header: logo→hub, star counter→progress, language toggle ✓
+
+### Files Changed
+- `index.html` — four changes:
+  1. Curriculum expanded: all 30 ELA arrays (en+es × 3 grades × 5 categories) now have 5–6 items; math/science (en+es × 3 grades) expanded to 4–5 items.
+  2. `renderActivity`: added optional-chaining crash guard (`?.`) and `Math.min` clamp on activityIndex; renders friendly fallback if dataset is missing.
+  3. `nextActivity`: added optional-chaining guard, empty-list fallback to elaHub/gradeSelect, wrap-around toast ("🌟 Round complete!") shown only when `list.length > 1`.
+  4. Flashcard Listen button XSS fix: `onclick="speak('${data.audio}')"` → `onclick='speak(${jsString(data.audio)})'`.
+
+### Remaining Content Gaps
+- None blocking. Each path has ≥ 4 activities. Content is starter-level; real expansion would add 10–20 items per category.
+- No `spanish` subject key — the Spanish hub button switches language to `es` and routes to `ela`. Working as designed; no separate subject needed.
+
+### Next Recommended Improvement
+Add a **progress indicator** (e.g., "2 / 5 ✦") to the activity header so the child knows how many cards remain before the round completes.
