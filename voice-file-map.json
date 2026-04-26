@@ -1,0 +1,267 @@
+{
+  "APP_BOOT_01": {
+    "en": "assets/audio/EN/app_boot_01.mp3",
+    "es": "assets/audio/ES/app_boot_01.mp3",
+    "trigger": "window.onload / init"
+  },
+  "APP_AUDIO_UNLOCK_01": {
+    "en": "assets/audio/EN/app_audio_unlock_01.mp3",
+    "es": "assets/audio/ES/app_audio_unlock_01.mp3",
+    "trigger": "unlockAudio"
+  },
+  "HUB_WELCOME_01": {
+    "en": "assets/audio/EN/hub_welcome_01.mp3",
+    "es": "assets/audio/ES/hub_welcome_01.mp3",
+    "trigger": "renderHub"
+  },
+  "HUB_PROMPT_01": {
+    "en": "assets/audio/EN/hub_prompt_01.mp3",
+    "es": "assets/audio/ES/hub_prompt_01.mp3",
+    "trigger": "renderHub"
+  },
+  "HUB_RANDOM_PRINCESS_DYNAMIC": {
+    "en": "assets/audio/EN/hub_random_princess_dynamic.mp3",
+    "es": "assets/audio/ES/hub_random_princess_dynamic.mp3",
+    "trigger": "renderHub / state.princess"
+  },
+  "SUBJECT_READING_01": {
+    "en": "assets/audio/EN/subject_reading_01.mp3",
+    "es": "assets/audio/ES/subject_reading_01.mp3",
+    "trigger": "Reading subject card onclick / navigate('gradeSelect')"
+  },
+  "SUBJECT_MATH_01": {
+    "en": "assets/audio/EN/subject_math_01.mp3",
+    "es": "assets/audio/ES/subject_math_01.mp3",
+    "trigger": "Mathematics subject card onclick / navigate('gradeSelect')"
+  },
+  "SUBJECT_SCIENCE_01": {
+    "en": "assets/audio/EN/subject_science_01.mp3",
+    "es": "assets/audio/ES/subject_science_01.mp3",
+    "trigger": "Science subject card onclick / navigate('gradeSelect')"
+  },
+  "SUBJECT_SPANISH_01": {
+    "en": "assets/audio/EN/subject_spanish_01.mp3",
+    "es": "assets/audio/ES/subject_spanish_01.mp3",
+    "trigger": "Spanish subject card onclick / toggleLanguage('es')"
+  },
+  "GRADE_SELECT_01": {
+    "en": "assets/audio/EN/grade_select_01.mp3",
+    "es": "assets/audio/ES/grade_select_01.mp3",
+    "trigger": "renderGradeSelect"
+  },
+  "GRADE_KINDERGARTEN_01": {
+    "en": "assets/audio/EN/grade_kindergarten_01.mp3",
+    "es": "assets/audio/ES/grade_kindergarten_01.mp3",
+    "trigger": "Kindergarten grade button onclick"
+  },
+  "GRADE_FIRST_01": {
+    "en": "assets/audio/EN/grade_first_01.mp3",
+    "es": "assets/audio/ES/grade_first_01.mp3",
+    "trigger": "1st grade button onclick"
+  },
+  "GRADE_SECOND_01": {
+    "en": "assets/audio/EN/grade_second_01.mp3",
+    "es": "assets/audio/ES/grade_second_01.mp3",
+    "trigger": "2nd grade button onclick"
+  },
+  "ELA_CATEGORY_PROMPT_01": {
+    "en": "assets/audio/EN/ela_category_prompt_01.mp3",
+    "es": "assets/audio/ES/ela_category_prompt_01.mp3",
+    "trigger": "renderElaHub"
+  },
+  "ELA_LETTERS_INTRO_01": {
+    "en": "assets/audio/EN/ela_letters_intro_01.mp3",
+    "es": "assets/audio/ES/ela_letters_intro_01.mp3",
+    "trigger": "Letters category onclick / navigate('activity')"
+  },
+  "ELA_MATCH_INTRO_01": {
+    "en": "assets/audio/EN/ela_match_intro_01.mp3",
+    "es": "assets/audio/ES/ela_match_intro_01.mp3",
+    "trigger": "Match category onclick / navigate('activity')"
+  },
+  "ELA_BLEND_INTRO_01": {
+    "en": "assets/audio/EN/ela_blend_intro_01.mp3",
+    "es": "assets/audio/ES/ela_blend_intro_01.mp3",
+    "trigger": "Blend category onclick / navigate('activity')"
+  },
+  "ELA_SENTENCES_INTRO_01": {
+    "en": "assets/audio/EN/ela_sentences_intro_01.mp3",
+    "es": "assets/audio/ES/ela_sentences_intro_01.mp3",
+    "trigger": "Sentences category onclick / navigate('activity')"
+  },
+  "ELA_SIGHT_INTRO_01": {
+    "en": "assets/audio/EN/ela_sight_intro_01.mp3",
+    "es": "assets/audio/ES/ela_sight_intro_01.mp3",
+    "trigger": "Sight words category onclick / navigate('activity')"
+  },
+  "ACTIVITY_INTRO_FLASHCARD_01": {
+    "en": "assets/audio/EN/activity_intro_flashcard_01.mp3",
+    "es": "assets/audio/ES/activity_intro_flashcard_01.mp3",
+    "trigger": "renderActivity / data.type === 'flashcard'"
+  },
+  "ACTIVITY_INTRO_QUIZ_01": {
+    "en": "assets/audio/EN/activity_intro_quiz_01.mp3",
+    "es": "assets/audio/ES/activity_intro_quiz_01.mp3",
+    "trigger": "renderActivity / data.type === 'quiz'"
+  },
+  "ACTIVITY_INTRO_BLEND_01": {
+    "en": "assets/audio/EN/activity_intro_blend_01.mp3",
+    "es": "assets/audio/ES/activity_intro_blend_01.mp3",
+    "trigger": "renderActivity / data.type === 'blend'"
+  },
+  "ACTIVITY_INTRO_SENTENCE_01": {
+    "en": "assets/audio/EN/activity_intro_sentence_01.mp3",
+    "es": "assets/audio/ES/activity_intro_sentence_01.mp3",
+    "trigger": "renderActivity / data.type === 'sentence'"
+  },
+  "ACTIVITY_INTRO_MATH_01": {
+    "en": "assets/audio/EN/activity_intro_math_01.mp3",
+    "es": "assets/audio/ES/activity_intro_math_01.mp3",
+    "trigger": "renderActivity / state.subject === 'math'"
+  },
+  "ACTIVITY_INTRO_SCIENCE_01": {
+    "en": "assets/audio/EN/activity_intro_science_01.mp3",
+    "es": "assets/audio/ES/activity_intro_science_01.mp3",
+    "trigger": "renderActivity / state.subject === 'science'"
+  },
+  "CURRICULUM_ITEM_AUDIO_DYNAMIC": {
+    "en": null,
+    "es": null,
+    "trigger": "renderActivity / data.audio",
+    "dynamic": true,
+    "note": "Generated later from live curriculum/state values; no shared static audio file is expected yet."
+  },
+  "BLEND_SOUND_DYNAMIC": {
+    "en": null,
+    "es": null,
+    "trigger": "renderActivity blend sound buttons / data.phonemes[i]",
+    "dynamic": true,
+    "note": "Generated later from live curriculum/state values; no shared static audio file is expected yet."
+  },
+  "BLEND_WORD_DYNAMIC": {
+    "en": null,
+    "es": null,
+    "trigger": "renderActivity blend listen button / data.item",
+    "dynamic": true,
+    "note": "Generated later from live curriculum/state values; no shared static audio file is expected yet."
+  },
+  "SENTENCE_WORD_DYNAMIC": {
+    "en": null,
+    "es": null,
+    "trigger": "renderActivity sentence word buttons / cleanWord",
+    "dynamic": true,
+    "note": "Generated later from live curriculum/state values; no shared static audio file is expected yet."
+  },
+  "FLASHCARD_LISTEN_HINT_01": {
+    "en": "assets/audio/EN/flashcard_listen_hint_01.mp3",
+    "es": "assets/audio/ES/flashcard_listen_hint_01.mp3",
+    "trigger": "renderActivity flashcard listen button"
+  },
+  "QUIZ_REPEAT_HINT_01": {
+    "en": "assets/audio/EN/quiz_repeat_hint_01.mp3",
+    "es": "assets/audio/ES/quiz_repeat_hint_01.mp3",
+    "trigger": "renderActivity quiz card onclick"
+  },
+  "CORRECT_PRAISE_01": {
+    "en": "assets/audio/EN/correct_praise_01.mp3",
+    "es": "assets/audio/ES/correct_praise_01.mp3",
+    "trigger": "showFeedback(true)"
+  },
+  "CORRECT_PRAISE_02": {
+    "en": "assets/audio/EN/correct_praise_02.mp3",
+    "es": "assets/audio/ES/correct_praise_02.mp3",
+    "trigger": "showFeedback(true)"
+  },
+  "CORRECT_PRAISE_03": {
+    "en": "assets/audio/EN/correct_praise_03.mp3",
+    "es": "assets/audio/ES/correct_praise_03.mp3",
+    "trigger": "showFeedback(true)"
+  },
+  "CORRECT_PRAISE_04": {
+    "en": "assets/audio/EN/correct_praise_04.mp3",
+    "es": "assets/audio/ES/correct_praise_04.mp3",
+    "trigger": "showFeedback(true)"
+  },
+  "WRONG_ENCOURAGE_01": {
+    "en": "assets/audio/EN/wrong_encourage_01.mp3",
+    "es": "assets/audio/ES/wrong_encourage_01.mp3",
+    "trigger": "showFeedback(false)"
+  },
+  "WRONG_ENCOURAGE_02": {
+    "en": "assets/audio/EN/wrong_encourage_02.mp3",
+    "es": "assets/audio/ES/wrong_encourage_02.mp3",
+    "trigger": "showFeedback(false)"
+  },
+  "WRONG_ENCOURAGE_03": {
+    "en": "assets/audio/EN/wrong_encourage_03.mp3",
+    "es": "assets/audio/ES/wrong_encourage_03.mp3",
+    "trigger": "showFeedback(false)"
+  },
+  "WRONG_ENCOURAGE_04": {
+    "en": "assets/audio/EN/wrong_encourage_04.mp3",
+    "es": "assets/audio/ES/wrong_encourage_04.mp3",
+    "trigger": "showFeedback(false)"
+  },
+  "NEXT_ACTIVITY_01": {
+    "en": "assets/audio/EN/next_activity_01.mp3",
+    "es": "assets/audio/ES/next_activity_01.mp3",
+    "trigger": "nextActivity"
+  },
+  "NEXT_ACTIVITY_02": {
+    "en": "assets/audio/EN/next_activity_02.mp3",
+    "es": "assets/audio/ES/next_activity_02.mp3",
+    "trigger": "nextActivity"
+  },
+  "ROUND_COMPLETE_01": {
+    "en": "assets/audio/EN/round_complete_01.mp3",
+    "es": "assets/audio/ES/round_complete_01.mp3",
+    "trigger": "nextActivity / wrapped round"
+  },
+  "PROGRESS_OPEN_01": {
+    "en": "assets/audio/EN/progress_open_01.mp3",
+    "es": "assets/audio/ES/progress_open_01.mp3",
+    "trigger": "renderProgress"
+  },
+  "PROGRESS_EMPTY_01": {
+    "en": "assets/audio/EN/progress_empty_01.mp3",
+    "es": "assets/audio/ES/progress_empty_01.mp3",
+    "trigger": "renderProgress / currentCount === 0"
+  },
+  "PROGRESS_STARS_DYNAMIC": {
+    "en": null,
+    "es": null,
+    "trigger": "renderProgress / currentCount",
+    "dynamic": true,
+    "note": "Generated later from live curriculum/state values; no shared static audio file is expected yet."
+  },
+  "LANGUAGE_SWITCH_TO_SPANISH_01": {
+    "en": "assets/audio/EN/language_switch_to_spanish_01.mp3",
+    "es": "assets/audio/ES/language_switch_to_spanish_01.mp3",
+    "trigger": "toggleLanguage / state.lang === 'es'"
+  },
+  "LANGUAGE_SWITCH_TO_ENGLISH_01": {
+    "en": "assets/audio/EN/language_switch_to_english_01.mp3",
+    "es": null,
+    "trigger": "toggleLanguage / state.lang === 'en'"
+  },
+  "BACK_TO_HUB_01": {
+    "en": "assets/audio/EN/back_to_hub_01.mp3",
+    "es": "assets/audio/ES/back_to_hub_01.mp3",
+    "trigger": "navigate('hub') from header/back controls"
+  },
+  "MORE_ACTIVITIES_SOON_01": {
+    "en": "assets/audio/EN/more_activities_soon_01.mp3",
+    "es": "assets/audio/ES/more_activities_soon_01.mp3",
+    "trigger": "renderActivity / missing dataset fallback"
+  },
+  "IMAGE_UNAVAILABLE_01": {
+    "en": "assets/audio/EN/image_unavailable_01.mp3",
+    "es": "assets/audio/ES/image_unavailable_01.mp3",
+    "trigger": "loadPrincessImage / all sources fail"
+  },
+  "SESSION_CELEBRATION_01": {
+    "en": "assets/audio/EN/session_celebration_01.mp3",
+    "es": "assets/audio/ES/session_celebration_01.mp3",
+    "trigger": "future milestone / streak or star threshold"
+  }
+}
