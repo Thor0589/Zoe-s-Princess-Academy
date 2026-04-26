@@ -1274,13 +1274,73 @@
             persona: null,
             activityIndex: 0,
             stars: JSON.parse(localStorage.getItem('zoeStats')) || { en: 0, es: 0 },
-            princess: null
+            princess: null,
+            suppressNextRouteVoice: false
         };
 
         // Audio Engine
         let synthEnabled = false;
         let availableVoices = [];
         window.currentUtterance = null; // Prevent iOS Safari GC
+        let currentVoiceAudio = null;
+        let voiceMap = {};
+        let voiceMapSource = 'fallback';
+        let bootVoiceAttempted = false;
+        const dynamicVoiceIds = new Set([
+            'CURRICULUM_ITEM_AUDIO_DYNAMIC',
+            'BLEND_SOUND_DYNAMIC',
+            'BLEND_WORD_DYNAMIC',
+            'SENTENCE_WORD_DYNAMIC',
+            'PROGRESS_STARS_DYNAMIC'
+        ]);
+        const staticVoiceIds = [
+            'APP_BOOT_01',
+            'APP_AUDIO_UNLOCK_01',
+            'HUB_WELCOME_01',
+            'HUB_PROMPT_01',
+            'HUB_RANDOM_PRINCESS_DYNAMIC',
+            'SUBJECT_READING_01',
+            'SUBJECT_MATH_01',
+            'SUBJECT_SCIENCE_01',
+            'SUBJECT_SPANISH_01',
+            'GRADE_SELECT_01',
+            'GRADE_KINDERGARTEN_01',
+            'GRADE_FIRST_01',
+            'GRADE_SECOND_01',
+            'ELA_CATEGORY_PROMPT_01',
+            'ELA_LETTERS_INTRO_01',
+            'ELA_MATCH_INTRO_01',
+            'ELA_BLEND_INTRO_01',
+            'ELA_SENTENCES_INTRO_01',
+            'ELA_SIGHT_INTRO_01',
+            'ACTIVITY_INTRO_FLASHCARD_01',
+            'ACTIVITY_INTRO_QUIZ_01',
+            'ACTIVITY_INTRO_BLEND_01',
+            'ACTIVITY_INTRO_SENTENCE_01',
+            'ACTIVITY_INTRO_MATH_01',
+            'ACTIVITY_INTRO_SCIENCE_01',
+            'FLASHCARD_LISTEN_HINT_01',
+            'QUIZ_REPEAT_HINT_01',
+            'CORRECT_PRAISE_01',
+            'CORRECT_PRAISE_02',
+            'CORRECT_PRAISE_03',
+            'CORRECT_PRAISE_04',
+            'WRONG_ENCOURAGE_01',
+            'WRONG_ENCOURAGE_02',
+            'WRONG_ENCOURAGE_03',
+            'WRONG_ENCOURAGE_04',
+            'NEXT_ACTIVITY_01',
+            'NEXT_ACTIVITY_02',
+            'ROUND_COMPLETE_01',
+            'PROGRESS_OPEN_01',
+            'PROGRESS_EMPTY_01',
+            'LANGUAGE_SWITCH_TO_SPANISH_01',
+            'LANGUAGE_SWITCH_TO_ENGLISH_01',
+            'BACK_TO_HUB_01',
+            'MORE_ACTIVITIES_SOON_01',
+            'IMAGE_UNAVAILABLE_01',
+            'SESSION_CELEBRATION_01'
+        ];
 
         // SEL Feedback Dictionary
         const feedbackPool = {
@@ -1479,6 +1539,10 @@
                 loading.classList.remove('hidden');
                 loading.textContent = 'Princess image unavailable';
             }
+            playVoiceForCurrentLanguage('IMAGE_UNAVAILABLE_01', {
+                fallbackText: state.lang === 'en' ? 'The portrait is resting, but the lesson is ready.' : 'El retrato está descansando, pero la lección está lista.',
+                interrupt: false
+            });
         }
 
         function initializePrincessImages(root = document) {
@@ -1492,11 +1556,149 @@
             return JSON.stringify(String(value)).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
         }
 
+        function voiceFileName(id) {
+            return `${id.toLowerCase()}.mp3`;
+        }
+
+        function createFallbackVoiceMap() {
+            const map = {};
+            staticVoiceIds.forEach((id) => {
+                map[id] = {
+                    en: `assets/audio/EN/${voiceFileName(id)}`,
+                    es: id === 'LANGUAGE_SWITCH_TO_ENGLISH_01' ? null : `assets/audio/ES/${voiceFileName(id)}`
+                };
+            });
+            dynamicVoiceIds.forEach((id) => {
+                map[id] = { en: null, es: null, dynamic: true };
+            });
+            return map;
+        }
+
+        function countConcreteVoicePaths(map = voiceMap) {
+            return Object.values(map).reduce((count, entry) => {
+                if (!entry) return count;
+                return count + (entry.en ? 1 : 0) + (entry.es ? 1 : 0);
+            }, 0);
+        }
+
+        function currentVoiceLang() {
+            return state.lang === 'es' ? 'es' : 'en';
+        }
+
+        function resolveVoicePath(id, lang = currentVoiceLang()) {
+            const entry = voiceMap[id];
+            if (!entry || entry.dynamic) return null;
+            return entry[lang] || entry.en || null;
+        }
+
+        function stopVoicePlayback({ cancelSpeech = true } = {}) {
+            if (currentVoiceAudio) {
+                currentVoiceAudio.pause();
+                currentVoiceAudio.removeAttribute('src');
+                currentVoiceAudio.load();
+                currentVoiceAudio = null;
+            }
+            if (cancelSpeech && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        function playVoice(id, options = {}) {
+            const {
+                fallbackText = '',
+                afterText = '',
+                afterVoice = null,
+                interrupt = true,
+                rate = 0.85,
+                pitch = 1.2,
+                lang = currentVoiceLang()
+            } = options;
+            const path = resolveVoicePath(id, lang);
+
+            if (!path) {
+                if (fallbackText) speak(fallbackText, rate, pitch);
+                if (typeof afterVoice === 'function') afterVoice(false);
+                return Promise.resolve(false);
+            }
+
+            if (!interrupt && currentVoiceAudio && !currentVoiceAudio.paused && !currentVoiceAudio.ended) {
+                currentVoiceAudio.addEventListener('ended', () => {
+                    playVoice(id, { ...options, interrupt: true, lang });
+                }, { once: true });
+                return Promise.resolve(false);
+            }
+
+            if (interrupt) stopVoicePlayback();
+
+            return new Promise((resolve) => {
+                const audio = new Audio(path);
+                currentVoiceAudio = audio;
+                audio.preload = 'auto';
+
+                audio.addEventListener('ended', () => {
+                    if (currentVoiceAudio === audio) currentVoiceAudio = null;
+                    if (afterText) speak(afterText, rate, pitch);
+                    if (typeof afterVoice === 'function') afterVoice(true);
+                    resolve(true);
+                }, { once: true });
+
+                audio.addEventListener('error', () => {
+                    if (currentVoiceAudio === audio) currentVoiceAudio = null;
+                    if (fallbackText) speak(fallbackText, rate, pitch);
+                    if (typeof afterVoice === 'function') afterVoice(false);
+                    resolve(false);
+                }, { once: true });
+
+                audio.play().catch(() => {
+                    if (currentVoiceAudio === audio) currentVoiceAudio = null;
+                    if (fallbackText) speak(fallbackText, rate, pitch);
+                    if (typeof afterVoice === 'function') afterVoice(false);
+                    resolve(false);
+                });
+            });
+        }
+
+        function playVoiceForCurrentLanguage(id, options = {}) {
+            return playVoice(id, { ...options, lang: currentVoiceLang() });
+        }
+
+        function playRandomVoice(prefix, count, fallbackText) {
+            const pick = Math.floor(Math.random() * count) + 1;
+            return playVoiceForCurrentLanguage(`${prefix}_${String(pick).padStart(2, '0')}`, { fallbackText });
+        }
+
+        function loadVoiceMap() {
+            voiceMap = createFallbackVoiceMap();
+            fetch('voice-file-map.json', { cache: 'no-store' })
+                .then((response) => response.ok ? response.json() : Promise.reject(new Error('voice map unavailable')))
+                .then((map) => {
+                    voiceMap = { ...voiceMap, ...map };
+                    voiceMapSource = 'voice-file-map.json';
+                    console.info('[ZoeVoice]', window.zoeVoiceDiagnostics());
+                })
+                .catch(() => {
+                    voiceMapSource = 'fallback';
+                    console.info('[ZoeVoice]', window.zoeVoiceDiagnostics());
+                });
+        }
+
+        window.playVoice = playVoice;
+        window.playVoiceForCurrentLanguage = playVoiceForCurrentLanguage;
+        window.zoeVoiceDiagnostics = function() {
+            return {
+                mapLoaded: Object.keys(voiceMap).length > 0,
+                source: voiceMapSource,
+                concretePaths: countConcreteVoicePaths(),
+                currentLanguage: state.lang === 'es' ? 'ES' : 'EN',
+                samplePath: resolveVoicePath('HUB_WELCOME_01'),
+                currentAudio: currentVoiceAudio ? currentVoiceAudio.currentSrc || currentVoiceAudio.src : null
+            };
+        };
+
         function init() {
+            loadVoiceMap();
             updateStarDisplay();
             navigate('hub');
-            document.body.addEventListener('click', unlockAudio, { once: true });
-            document.body.addEventListener('touchstart', unlockAudio, { once: true });
+            document.body.addEventListener('click', unlockAudio, { once: true, capture: true });
+            document.body.addEventListener('touchstart', unlockAudio, { once: true, capture: true });
 
             if ('speechSynthesis' in window) {
                 availableVoices = window.speechSynthesis.getVoices();
@@ -1506,13 +1708,22 @@
             }
         }
 
-        function toggleLanguage(forceLang = null) {
+        function toggleLanguage(forceLang = null, options = {}) {
             state.lang = forceLang || (state.lang === 'en' ? 'es' : 'en');
             document.getElementById('lang-toggle-btn').innerText = state.lang === 'en' ? '🇺🇸' : '🇲🇽';
             const appTitle = document.getElementById('app-title');
             if (appTitle) appTitle.innerText = uiText[state.lang].title;
             updateStarDisplay();
-            navigate('hub');
+            const voiceId = state.lang === 'es' ? 'LANGUAGE_SWITCH_TO_SPANISH_01' : 'LANGUAGE_SWITCH_TO_ENGLISH_01';
+            if (options.navigate !== false) {
+                state.suppressNextRouteVoice = true;
+                navigate('hub');
+            }
+            if (!options.silent) {
+                playVoiceForCurrentLanguage(voiceId, {
+                    fallbackText: state.lang === 'es' ? 'El brillo en español está listo.' : 'English sparkle is ready.'
+                });
+            }
         }
 
         function saveStars() {
@@ -1535,6 +1746,7 @@
 
         function speak(text, rate = 0.85, pitch = 1.2) {
             if (!('speechSynthesis' in window)) return;
+            stopVoicePlayback({ cancelSpeech: false });
             window.speechSynthesis.cancel();
             
             window.currentUtterance = new SpeechSynthesisUtterance(text);
@@ -1556,6 +1768,122 @@
             return pool[Math.floor(Math.random() * pool.length)];
         }
 
+        function subjectVoiceId(subject, persona) {
+            if (persona === 'elena') return 'SUBJECT_SPANISH_01';
+            if (subject === 'math') return 'SUBJECT_MATH_01';
+            if (subject === 'science') return 'SUBJECT_SCIENCE_01';
+            return 'SUBJECT_READING_01';
+        }
+
+        function gradeVoiceId(grade) {
+            return {
+                k: 'GRADE_KINDERGARTEN_01',
+                g1: 'GRADE_FIRST_01',
+                g2: 'GRADE_SECOND_01'
+            }[grade] || 'GRADE_SELECT_01';
+        }
+
+        function elaCategoryVoiceId(category) {
+            return {
+                letters: 'ELA_LETTERS_INTRO_01',
+                match: 'ELA_MATCH_INTRO_01',
+                blend: 'ELA_BLEND_INTRO_01',
+                sentences: 'ELA_SENTENCES_INTRO_01',
+                sight: 'ELA_SIGHT_INTRO_01'
+            }[category] || 'ELA_CATEGORY_PROMPT_01';
+        }
+
+        function activityIntroVoiceId(data) {
+            if (state.subject === 'math') return 'ACTIVITY_INTRO_MATH_01';
+            if (state.subject === 'science') return 'ACTIVITY_INTRO_SCIENCE_01';
+            if (!data) return null;
+            return {
+                flashcard: 'ACTIVITY_INTRO_FLASHCARD_01',
+                quiz: 'ACTIVITY_INTRO_QUIZ_01',
+                blend: 'ACTIVITY_INTRO_BLEND_01',
+                sentence: 'ACTIVITY_INTRO_SENTENCE_01'
+            }[data.type] || null;
+        }
+
+        function getCurrentActivityData() {
+            const dataset = state.subject === 'ela'
+                ? curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory]
+                : curriculum[state.lang]?.[state.subject]?.[state.grade];
+            if (!dataset || dataset.length === 0) return null;
+            return dataset[Math.min(state.activityIndex, dataset.length - 1)];
+        }
+
+        function playActivityIntro(data = getCurrentActivityData(), options = {}) {
+            if (!data) {
+                playVoiceForCurrentLanguage('MORE_ACTIVITIES_SOON_01', {
+                    fallbackText: state.lang === 'en' ? 'More lessons are coming soon.' : 'Muy pronto habrá más lecciones.',
+                    interrupt: options.interrupt ?? true
+                });
+                return;
+            }
+
+            const id = activityIntroVoiceId(data);
+            if (data.type === 'flashcard' || data.type === 'quiz') {
+                playVoiceForCurrentLanguage(id, {
+                    fallbackText: data.audio,
+                    afterText: data.audio,
+                    interrupt: options.interrupt ?? true
+                });
+                return;
+            }
+            if (data.type === 'blend') {
+                playVoiceForCurrentLanguage(id, {
+                    fallbackText: state.lang === 'en' ? 'Tap the sounds, then read the word!' : 'Toca los sonidos y une la palabra.',
+                    interrupt: options.interrupt ?? true
+                });
+                return;
+            }
+            if (data.type === 'sentence') {
+                playVoiceForCurrentLanguage(id, {
+                    fallbackText: state.lang === 'en' ? 'Tap a word to hear it.' : 'Toca una palabra para escucharla.',
+                    interrupt: options.interrupt ?? true
+                });
+            }
+        }
+
+        function selectSubject(subject, persona, targetLang = null) {
+            if (targetLang && targetLang !== state.lang) {
+                toggleLanguage(targetLang, { silent: true, navigate: false });
+            }
+            state.suppressNextRouteVoice = true;
+            navigate('gradeSelect', { subject, persona, fromHub: true });
+            playVoiceForCurrentLanguage(subjectVoiceId(subject, persona), {
+                fallbackText: personas[state.lang][persona]?.greeting || uiText[state.lang].gradeTitle
+            });
+        }
+
+        function selectGrade(grade, target) {
+            state.suppressNextRouteVoice = true;
+            navigate(target, { grade });
+            playVoiceForCurrentLanguage(gradeVoiceId(grade), {
+                fallbackText: uiText[state.lang][grade] || uiText[state.lang].gradeTitle,
+                afterVoice: () => {
+                    if (target === 'elaHub') {
+                        playVoiceForCurrentLanguage('ELA_CATEGORY_PROMPT_01', {
+                            fallbackText: uiText[state.lang].elaHubTitle,
+                            interrupt: false
+                        });
+                    } else {
+                        playActivityIntro(getCurrentActivityData(), { interrupt: false });
+                    }
+                }
+            });
+        }
+
+        function selectElaCategory(category) {
+            state.suppressNextRouteVoice = true;
+            navigate('activity', { elaCategory: category });
+            playVoiceForCurrentLanguage(elaCategoryVoiceId(category), {
+                fallbackText: uiText[state.lang].elaHubTitle,
+                afterVoice: () => playActivityIntro(getCurrentActivityData(), { interrupt: false })
+            });
+        }
+
         function showFeedback(isPositive) {
             const msg = getFeedback(isPositive);
             const toast = document.getElementById('feedback-toast');
@@ -1568,7 +1896,7 @@
             toast.className = `fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-white px-8 py-5 rounded-full shadow-2xl border-4 z-40 transition-opacity duration-300 w-max max-w-[90vw] ${isPositive ? 'border-green-400' : 'border-blue-400'}`;
             text.className = `text-2xl font-bold ${isPositive ? 'text-green-700' : 'text-blue-700'}`;
             
-            speak(msg, 1.0, 1.3);
+            playRandomVoice(isPositive ? 'CORRECT_PRAISE' : 'WRONG_ENCOURAGE', 4, msg);
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 2500);
 
@@ -1583,7 +1911,7 @@
         function navigate(view, params = {}) {
             const container = document.getElementById('app-container');
             container.innerHTML = ''; 
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            stopVoicePlayback();
 
             if (params.subject) state.subject = params.subject;
             if (params.grade) {
@@ -1625,22 +1953,22 @@
                     </div>
 
                     <div class="subjects-grid">
-                        <button onclick="navigate('gradeSelect', {subject: 'ela', persona: 'belle', fromHub: true})" class="subject-card subject-card-blue btn-kid">
+                        <button onclick="selectSubject('ela', 'belle')" class="subject-card subject-card-blue btn-kid">
                             <span class="subject-label"><span class="subject-icon">📚</span>${t.btnEla}</span>
                             ${renderPrincessImage(readingPrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="navigate('gradeSelect', {subject: 'math', persona: 'rapunzel', fromHub: true})" class="subject-card subject-card-pink btn-kid">
+                        <button onclick="selectSubject('math', 'rapunzel')" class="subject-card subject-card-pink btn-kid">
                             <span class="subject-label">${t.btnMath}</span>
                             ${renderPrincessImage(mathPrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="navigate('gradeSelect', {subject: 'science', persona: 'moana', fromHub: true})" class="subject-card subject-card-green wide btn-kid">
+                        <button onclick="selectSubject('science', 'moana')" class="subject-card subject-card-green wide btn-kid">
                             <span class="subject-label">${t.btnSci}</span>
                             ${renderPrincessImage(sciencePrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="toggleLanguage('es'); navigate('gradeSelect', {subject: 'ela', persona: 'elena', fromHub: true})" class="subject-card subject-card-purple wide btn-kid">
+                        <button onclick="selectSubject('ela', 'elena', 'es')" class="subject-card subject-card-purple wide btn-kid">
                             <span class="subject-label">${t.btnSpan}</span>
                             ${renderPrincessImage(spanishPrincess, "subject-art")}
                         </button>
@@ -1648,7 +1976,27 @@
                 </div>
             `;
             initializePrincessImages(container);
-            speak(introText);
+            if (state.suppressNextRouteVoice) {
+                state.suppressNextRouteVoice = false;
+            } else {
+                const playHubPrompt = () => playVoiceForCurrentLanguage('HUB_PROMPT_01', {
+                    fallbackText: t.hubSub,
+                    interrupt: false
+                });
+                const playPrincessGreeting = () => playVoiceForCurrentLanguage('HUB_RANDOM_PRINCESS_DYNAMIC', {
+                    fallbackText: introText,
+                    afterVoice: playHubPrompt
+                });
+                if (!bootVoiceAttempted) {
+                    bootVoiceAttempted = true;
+                    playVoiceForCurrentLanguage('APP_BOOT_01', {
+                        fallbackText: t.hubSub,
+                        afterVoice: playPrincessGreeting
+                    });
+                } else {
+                    playPrincessGreeting();
+                }
+            }
         }
 
         function renderGradeSelect(container, fromHub = false) {
@@ -1659,18 +2007,20 @@
                     <button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl">${t.back}</button>
                     <h2 class="text-4xl font-extrabold text-slate-700 mb-10 mt-16 md:mt-0">${t.gradeTitle}</h2>
                     <div class="flex flex-col space-y-6">
-                        <button onclick="navigate('${target}', {grade: 'k'})" class="btn-kid bg-teal-300 hover:bg-teal-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-teal-500">${t.k}</button>
-                        <button onclick="navigate('${target}', {grade: 'g1'})" class="btn-kid bg-indigo-300 hover:bg-indigo-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-indigo-500">${t.g1}</button>
-                        <button onclick="navigate('${target}', {grade: 'g2'})" class="btn-kid bg-rose-300 hover:bg-rose-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-rose-500">${t.g2}</button>
+                        <button onclick="selectGrade('k', '${target}')" class="btn-kid bg-teal-300 hover:bg-teal-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-teal-500">${t.k}</button>
+                        <button onclick="selectGrade('g1', '${target}')" class="btn-kid bg-indigo-300 hover:bg-indigo-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-indigo-500">${t.g1}</button>
+                        <button onclick="selectGrade('g2', '${target}')" class="btn-kid bg-rose-300 hover:bg-rose-400 text-white p-8 rounded-[2rem] text-3xl font-bold border-b-8 border-rose-500">${t.g2}</button>
                     </div>
                 </div>
             `;
 
-            if (fromHub && state.persona) {
+            if (state.suppressNextRouteVoice) {
+                state.suppressNextRouteVoice = false;
+            } else if (fromHub && state.persona) {
                 const personaVoice = personas[state.lang][state.persona].greeting;
-                speak(personaVoice + " " + t.gradeTitle);
+                playVoiceForCurrentLanguage('GRADE_SELECT_01', { fallbackText: personaVoice + " " + t.gradeTitle });
             } else {
-                speak(t.gradeTitle);
+                playVoiceForCurrentLanguage('GRADE_SELECT_01', { fallbackText: t.gradeTitle });
             }
         }
 
@@ -1682,25 +2032,29 @@
                     <h2 class="text-4xl font-extrabold text-slate-700 mb-10 mt-16 md:mt-0">${t.elaHubTitle}</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                        <button onclick="navigate('activity', {elaCategory: 'letters'})" class="btn-kid bg-blue-300 hover:bg-blue-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
+                        <button onclick="selectElaCategory('letters')" class="btn-kid bg-blue-300 hover:bg-blue-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
                             <span>${t.btnLearnLetters}</span><span class="text-4xl bg-white/30 p-3 rounded-full">🔤</span>
                         </button>
-                        <button onclick="navigate('activity', {elaCategory: 'match'})" class="btn-kid bg-pink-300 hover:bg-pink-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
+                        <button onclick="selectElaCategory('match')" class="btn-kid bg-pink-300 hover:bg-pink-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
                             <span>${t.btnMatchSounds}</span><span class="text-4xl bg-white/30 p-3 rounded-full">🧩</span>
                         </button>
-                        <button onclick="navigate('activity', {elaCategory: 'blend'})" class="btn-kid bg-purple-300 hover:bg-purple-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
+                        <button onclick="selectElaCategory('blend')" class="btn-kid bg-purple-300 hover:bg-purple-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
                             <span>${t.btnBlendWords}</span><span class="text-4xl bg-white/30 p-3 rounded-full">🗣️</span>
                         </button>
-                        <button onclick="navigate('activity', {elaCategory: 'sentences'})" class="btn-kid bg-orange-300 hover:bg-orange-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
+                        <button onclick="selectElaCategory('sentences')" class="btn-kid bg-orange-300 hover:bg-orange-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between">
                             <span>${t.btnReadSentences}</span><span class="text-4xl bg-white/30 p-3 rounded-full">📖</span>
                         </button>
-                        <button onclick="navigate('activity', {elaCategory: 'sight'})" class="btn-kid bg-green-300 hover:bg-green-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between md:col-span-2 md:w-2/3 mx-auto">
+                        <button onclick="selectElaCategory('sight')" class="btn-kid bg-green-300 hover:bg-green-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between md:col-span-2 md:w-2/3 mx-auto">
                             <span>${t.btnSightWords}</span><span class="text-4xl bg-white/30 p-3 rounded-full">👁️</span>
                         </button>
                     </div>
                 </div>
             `;
-            speak(t.elaHubTitle);
+            if (state.suppressNextRouteVoice) {
+                state.suppressNextRouteVoice = false;
+            } else {
+                playVoiceForCurrentLanguage('ELA_CATEGORY_PROMPT_01', { fallbackText: t.elaHubTitle });
+            }
         }
 
         // --- ENGINE: DYNAMIC RENDERER ---
@@ -1712,6 +2066,9 @@
                 : curriculum[state.lang]?.[state.subject]?.[state.grade];
             if (!dataset || dataset.length === 0) {
                 container.innerHTML = `<div class="text-center pt-24"><p class="text-3xl font-bold text-slate-500">✨ More activities coming soon!</p><button onclick="navigate('hub')" class="mt-8 btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-4 rounded-full">${uiText[state.lang].back}</button></div>`;
+                playVoiceForCurrentLanguage('MORE_ACTIVITIES_SOON_01', {
+                    fallbackText: state.lang === 'en' ? 'More lessons are coming soon.' : 'Muy pronto habrá más lecciones.'
+                });
                 return;
             }
             const data = dataset[Math.min(state.activityIndex, dataset.length - 1)];
@@ -1728,25 +2085,26 @@
 
             if (data.type === 'flashcard') {
                 html += `
-                    <div class="bg-white border-4 border-blue-200 rounded-[3rem] p-10 shadow-xl mb-10 cursor-pointer hover:bg-blue-50 transition" onclick='speak(${jsString(data.audio)})'>
+                    <div class="bg-white border-4 border-blue-200 rounded-[3rem] p-10 shadow-xl mb-10 cursor-pointer hover:bg-blue-50 transition" onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio)} })'>
                         <div class="text-8xl md:text-9xl font-black text-slate-800 tracking-widest">${data.item}</div>
                         <div class="mt-8 text-8xl">${data.emoji}</div>
                         <div class="text-4xl font-bold text-slate-600 mt-6">${data.desc}</div>
                     </div>
                     <div class="grid grid-cols-2 gap-6">
-                        <button onclick='speak(${jsString(data.audio)})' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl py-6 rounded-[2rem] flex items-center justify-center space-x-2">
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio)} })' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl py-6 rounded-[2rem] flex items-center justify-center space-x-2">
                             <span>🔊</span> <span>${t.read}</span>
                         </button>
                         <button onclick="nextActivity()" class="btn-kid bg-blue-400 hover:bg-blue-500 text-white font-bold text-2xl py-6 rounded-[2rem]">${t.next}</button>
                     </div>
                 `;
-                speak(data.audio);
+                if (state.suppressNextRouteVoice) state.suppressNextRouteVoice = false;
+                else playActivityIntro(data);
             } 
             else if (data.type === 'quiz') {
                 // Randomize options
                 const opts = [...data.options].sort(() => Math.random() - 0.5);
                 html += `
-                    <div class="bg-white border-4 border-pink-200 rounded-[3rem] p-8 shadow-xl mb-10 cursor-pointer" onclick='speak(${jsString(data.audio)})'>
+                    <div class="bg-white border-4 border-pink-200 rounded-[3rem] p-8 shadow-xl mb-10 cursor-pointer" onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio)} })'>
                         <p class="text-4xl font-extrabold text-slate-800 mb-4">${data.q}</p>
                         ${data.emoji ? `<div class="text-7xl mt-4">${data.emoji}</div>` : ''}
                     </div>
@@ -1758,26 +2116,28 @@
                         `).join('')}
                     </div>
                 `;
-                speak(data.audio);
+                if (state.suppressNextRouteVoice) state.suppressNextRouteVoice = false;
+                else playActivityIntro(data);
             }
             else if (data.type === 'blend') {
                 html += `
                     <div class="text-9xl mb-8 animate-bounce-slight">${data.emoji}</div>
                     <div class="flex flex-wrap justify-center gap-4 mb-10">
                         ${data.sounds.map((sound, i) => `
-                            <button onclick='speak(${jsString(data.phonemes[i])})' class="btn-kid w-24 h-24 md:w-32 md:h-32 bg-white border-4 border-purple-200 rounded-[2rem] text-5xl md:text-7xl font-bold text-slate-700 flex items-center justify-center hover:bg-purple-50">
+                            <button onclick='playVoiceForCurrentLanguage("BLEND_SOUND_DYNAMIC", { fallbackText: ${jsString(data.phonemes[i])} })' class="btn-kid w-24 h-24 md:w-32 md:h-32 bg-white border-4 border-purple-200 rounded-[2rem] text-5xl md:text-7xl font-bold text-slate-700 flex items-center justify-center hover:bg-purple-50">
                                 ${sound}
                             </button>
                         `).join('')}
                     </div>
                     <div class="flex flex-col space-y-6 max-w-sm mx-auto">
-                        <button onclick='speak(${jsString(data.item)})' class="btn-kid bg-purple-400 hover:bg-purple-500 text-white font-bold text-3xl py-6 rounded-full flex items-center justify-center space-x-3">
+                        <button onclick='playVoiceForCurrentLanguage("BLEND_WORD_DYNAMIC", { fallbackText: ${jsString(data.item)} })' class="btn-kid bg-purple-400 hover:bg-purple-500 text-white font-bold text-3xl py-6 rounded-full flex items-center justify-center space-x-3">
                             <span>🗣️</span> <span>${t.read}</span>
                         </button>
                         <button onclick="nextActivity()" class="btn-kid bg-slate-200 text-slate-700 font-bold text-2xl py-5 rounded-full">${t.next}</button>
                     </div>
                 `;
-                speak("Tap the sounds, then read the word!");
+                if (state.suppressNextRouteVoice) state.suppressNextRouteVoice = false;
+                else playActivityIntro(data);
             }
             else if (data.type === 'sentence') {
                 const words = data.text.split(' ');
@@ -1786,20 +2146,21 @@
                         ${words.map(w => {
                             const cleanWord = w.replace(/[^\w\sáéíóúüñ]/gi, ""); 
                             return `
-                                <button onclick='speak(${jsString(cleanWord)})' class="text-5xl md:text-6xl font-bold text-slate-800 hover:text-orange-400 transition-colors p-2 rounded-xl hover:bg-orange-50">
+                                <button onclick='playVoiceForCurrentLanguage("SENTENCE_WORD_DYNAMIC", { fallbackText: ${jsString(cleanWord)} })' class="text-5xl md:text-6xl font-bold text-slate-800 hover:text-orange-400 transition-colors p-2 rounded-xl hover:bg-orange-50">
                                     ${w}
                                 </button>
                             `;
                         }).join('')}
                     </div>
                     <div class="flex justify-center space-x-6">
-                        <button onclick='speak(${jsString(data.audio || data.text)})' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-6 rounded-full flex items-center space-x-3">
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio || data.text)} })' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-6 rounded-full flex items-center space-x-3">
                             <span>🔊</span> <span>${t.read}</span>
                         </button>
                         <button onclick="nextActivity()" class="btn-kid bg-orange-400 hover:bg-orange-500 text-white font-bold text-2xl px-8 py-6 rounded-full">${t.next}</button>
                     </div>
                 `;
-                speak(state.lang === 'en' ? "Tap a word to hear it." : "Toca una palabra para escucharla.");
+                if (state.suppressNextRouteVoice) state.suppressNextRouteVoice = false;
+                else playActivityIntro(data);
             }
 
             html += `</div>`;
@@ -1816,6 +2177,9 @@
             const wrapped = nextIndex < state.activityIndex || (state.activityIndex === 0 && list.length === 1);
             state.activityIndex = nextIndex;
             if (wrapped && list.length > 1) {
+                playVoiceForCurrentLanguage('ROUND_COMPLETE_01', {
+                    fallbackText: state.lang === 'en' ? 'Round complete! Starting over.' : '¡Ronda completa! Empezamos de nuevo.'
+                });
                 // Brief "round complete" toast before re-rendering
                 const toast = document.createElement('div');
                 toast.textContent = state.lang === 'en' ? '🌟 Round complete! Starting over…' : '🌟 ¡Ronda completa! Empezando de nuevo…';
@@ -1858,7 +2222,10 @@
                 </div>
             `;
             initializePrincessImages(container);
-            speak(`${currentCount} stars!`);
+            playVoiceForCurrentLanguage(currentCount === 0 ? 'PROGRESS_EMPTY_01' : 'PROGRESS_OPEN_01', {
+                fallbackText: `${currentCount} stars!`,
+                afterText: currentCount === 0 ? '' : `${currentCount} stars!`
+            });
         }
 
         // --- FX ---
