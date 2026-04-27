@@ -242,6 +242,11 @@
 
         <div class="flex items-center space-x-3 z-20">
             <button onclick="toggleLanguage()" id="lang-toggle-btn" class="text-3xl hover:scale-110 transition-transform btn-kid bg-slate-50 rounded-xl px-2 pb-1 border border-slate-200">🇺🇸</button>
+            <div class="hidden sm:flex items-center bg-white px-4 py-2 rounded-full border border-pink-200 font-bold text-pink-700 shadow-sm">
+                <span class="mr-2 text-sm">Streak</span>
+                <span id="streak-count-header" class="text-lg">0</span>
+                <span class="ml-1 text-xl">🔥</span>
+            </div>
             <div class="flex items-center bg-[#fff8d6] px-4 py-2 rounded-full border border-[#ebd373] font-bold text-yellow-700 cursor-pointer shadow-sm hover:bg-[#ffedb3] transition-colors" onclick="navigate('progress')">
                 <span id="star-count-header" class="mr-2 text-lg">0</span>
                 <span class="text-xl">⭐</span>
@@ -1265,6 +1270,182 @@
             }
         };;;
 
+        function addCurriculumItems(lang, subject, grade, category, items) {
+            const target = category
+                ? curriculum[lang]?.[subject]?.[grade]?.[category]
+                : curriculum[lang]?.[subject]?.[grade];
+            if (Array.isArray(target)) target.push(...items);
+        }
+
+        function applyLearningSystemCurriculum() {
+            const money = {
+                en: {
+                    k: [
+                        ['Which coin is worth 1¢?', ['Penny','Nickel','Dime'], 'Penny', '🪙', 'A penny is worth one cent.'],
+                        ['Which coin is worth 5¢?', ['Nickel','Penny','Quarter'], 'Nickel', '🪙', 'A nickel is worth five cents.'],
+                        ['Which coin is worth 10¢?', ['Dime','Nickel','Penny'], 'Dime', '🪙', 'A dime is worth ten cents.'],
+                        ['Which coin is worth 25¢?', ['Quarter','Dime','Nickel'], 'Quarter', '🪙', 'A quarter is worth twenty-five cents.'],
+                        ['What is 1¢ + 1¢?', ['2¢','5¢','10¢'], '2¢', '🪙', 'One cent plus one cent equals two cents.'],
+                        ['Which coin has the smallest value?', ['Penny','Nickel','Dime'], 'Penny', '🪙', 'A penny has the smallest value here.'],
+                        ['Match the coin: penny.', ['1¢','5¢','10¢'], '1¢', '🪙', 'A penny matches one cent.'],
+                        ['Match the coin: quarter.', ['25¢','10¢','5¢'], '25¢', '🪙', 'A quarter matches twenty-five cents.']
+                    ],
+                    g1: [
+                        ['5¢ + 5¢ = ?', ['10¢','6¢','25¢'], '10¢', '🪙', 'Two nickels make ten cents.'],
+                        ['10¢ + 5¢ = ?', ['15¢','12¢','20¢'], '15¢', '🪙', 'Ten cents plus five cents equals fifteen cents.'],
+                        ['25¢ + 1¢ = ?', ['26¢','30¢','15¢'], '26¢', '🪙', 'A quarter and a penny make twenty-six cents.'],
+                        ['Which is more?', ['10¢','5¢','1¢'], '10¢', '🪙', 'Ten cents is more than five cents.'],
+                        ['Which is less?', ['1¢','25¢','10¢'], '1¢', '🪙', 'One cent is less than the other amounts.'],
+                        ['A dime and a dime make...', ['20¢','15¢','30¢'], '20¢', '🪙', 'Two dimes make twenty cents.'],
+                        ['A nickel and a penny make...', ['6¢','10¢','2¢'], '6¢', '🪙', 'A nickel and penny make six cents.'],
+                        ['How many pennies make 5¢?', ['5','2','10'], '5', '🪙', 'Five pennies make five cents.'],
+                        ['25¢ is the same as...', ['A quarter','A dime','A penny'], 'A quarter', '🪙', 'Twenty-five cents is one quarter.'],
+                        ['10¢ is the same as...', ['A dime','A nickel','A quarter'], 'A dime', '🪙', 'Ten cents is one dime.']
+                    ],
+                    g2: [
+                        ['Zoe buys a sticker for 30¢ and pays 50¢. Change?', ['20¢','10¢','30¢'], '20¢', '🛍️', 'Fifty cents minus thirty cents equals twenty cents.'],
+                        ['25¢ + 10¢ + 5¢ = ?', ['40¢','35¢','45¢'], '40¢', '🪙', 'A quarter, dime, and nickel make forty cents.'],
+                        ['You have 60¢. A pencil costs 45¢. How much is left?', ['15¢','25¢','5¢'], '15¢', '✏️', 'Sixty minus forty-five equals fifteen cents.'],
+                        ['Two quarters equal...', ['50¢','25¢','75¢'], '50¢', '🪙', 'Two quarters equal fifty cents.'],
+                        ['Buy a toy for 70¢ with $1. Change?', ['30¢','20¢','40¢'], '30¢', '🧸', 'One dollar minus seventy cents equals thirty cents.'],
+                        ['Which amount is greatest?', ['65¢','56¢','46¢'], '65¢', '🪙', 'Sixty-five cents is the greatest amount.'],
+                        ['35¢ + 25¢ = ?', ['60¢','50¢','70¢'], '60¢', '🪙', 'Thirty-five plus twenty-five equals sixty cents.'],
+                        ['90¢ - 40¢ = ?', ['50¢','60¢','30¢'], '50¢', '🪙', 'Ninety cents minus forty cents equals fifty cents.'],
+                        ['A snack costs 55¢. You have 50¢. Need...', ['5¢ more','10¢ more','25¢ more'], '5¢ more', '🍎', 'You need five more cents.'],
+                        ['Four dimes equal...', ['40¢','25¢','14¢'], '40¢', '🪙', 'Four dimes equal forty cents.']
+                    ]
+                },
+                es: {
+                    k: [
+                        ['¿Qué moneda vale 1¢?', ['Penny','Nickel','Dime'], 'Penny', '🪙', 'Un penny vale un centavo.'],
+                        ['¿Qué moneda vale 5¢?', ['Nickel','Penny','Quarter'], 'Nickel', '🪙', 'Un nickel vale cinco centavos.'],
+                        ['¿Qué moneda vale 10¢?', ['Dime','Nickel','Penny'], 'Dime', '🪙', 'Un dime vale diez centavos.'],
+                        ['¿Qué moneda vale 25¢?', ['Quarter','Dime','Nickel'], 'Quarter', '🪙', 'Un quarter vale veinticinco centavos.'],
+                        ['¿Cuánto es 1¢ + 1¢?', ['2¢','5¢','10¢'], '2¢', '🪙', 'Un centavo más un centavo son dos centavos.'],
+                        ['¿Qué moneda vale menos?', ['Penny','Nickel','Dime'], 'Penny', '🪙', 'El penny vale menos.'],
+                        ['Une penny con...', ['1¢','5¢','10¢'], '1¢', '🪙', 'Penny va con un centavo.'],
+                        ['Une quarter con...', ['25¢','10¢','5¢'], '25¢', '🪙', 'Quarter va con veinticinco centavos.']
+                    ],
+                    g1: [
+                        ['5¢ + 5¢ = ?', ['10¢','6¢','25¢'], '10¢', '🪙', 'Dos nickels hacen diez centavos.'],
+                        ['10¢ + 5¢ = ?', ['15¢','12¢','20¢'], '15¢', '🪙', 'Diez más cinco son quince centavos.'],
+                        ['25¢ + 1¢ = ?', ['26¢','30¢','15¢'], '26¢', '🪙', 'Un quarter y un penny hacen veintiséis centavos.'],
+                        ['¿Cuál es más?', ['10¢','5¢','1¢'], '10¢', '🪙', 'Diez centavos es más que cinco.'],
+                        ['¿Cuál es menos?', ['1¢','25¢','10¢'], '1¢', '🪙', 'Un centavo es menos.'],
+                        ['Un dime y un dime hacen...', ['20¢','15¢','30¢'], '20¢', '🪙', 'Dos dimes hacen veinte centavos.'],
+                        ['Un nickel y un penny hacen...', ['6¢','10¢','2¢'], '6¢', '🪙', 'Un nickel y un penny hacen seis centavos.'],
+                        ['¿Cuántos pennies hacen 5¢?', ['5','2','10'], '5', '🪙', 'Cinco pennies hacen cinco centavos.'],
+                        ['25¢ es igual a...', ['Un quarter','Un dime','Un penny'], 'Un quarter', '🪙', 'Veinticinco centavos es un quarter.'],
+                        ['10¢ es igual a...', ['Un dime','Un nickel','Un quarter'], 'Un dime', '🪙', 'Diez centavos es un dime.']
+                    ],
+                    g2: [
+                        ['Zoe compra una calcomanía de 30¢ y paga 50¢. ¿Cambio?', ['20¢','10¢','30¢'], '20¢', '🛍️', 'Cincuenta menos treinta son veinte centavos.'],
+                        ['25¢ + 10¢ + 5¢ = ?', ['40¢','35¢','45¢'], '40¢', '🪙', 'Un quarter, un dime y un nickel hacen cuarenta centavos.'],
+                        ['Tienes 60¢. Un lápiz cuesta 45¢. ¿Cuánto queda?', ['15¢','25¢','5¢'], '15¢', '✏️', 'Sesenta menos cuarenta y cinco son quince centavos.'],
+                        ['Dos quarters son...', ['50¢','25¢','75¢'], '50¢', '🪙', 'Dos quarters son cincuenta centavos.'],
+                        ['Un juguete cuesta 70¢. Pagas $1. ¿Cambio?', ['30¢','20¢','40¢'], '30¢', '🧸', 'Un dólar menos setenta centavos son treinta centavos.'],
+                        ['¿Qué cantidad es mayor?', ['65¢','56¢','46¢'], '65¢', '🪙', 'Sesenta y cinco centavos es mayor.'],
+                        ['35¢ + 25¢ = ?', ['60¢','50¢','70¢'], '60¢', '🪙', 'Treinta y cinco más veinticinco son sesenta centavos.'],
+                        ['90¢ - 40¢ = ?', ['50¢','60¢','30¢'], '50¢', '🪙', 'Noventa menos cuarenta son cincuenta centavos.'],
+                        ['Una merienda cuesta 55¢. Tienes 50¢. Necesitas...', ['5¢ más','10¢ más','25¢ más'], '5¢ más', '🍎', 'Necesitas cinco centavos más.'],
+                        ['Cuatro dimes son...', ['40¢','25¢','14¢'], '40¢', '🪙', 'Cuatro dimes son cuarenta centavos.']
+                    ]
+                }
+            };
+
+            const listening = {
+                en: {
+                    k: [
+                        ['Mia has a red ball. She rolls it to Dad.', 'What color is the ball?', ['Red','Blue','Green'], 'Red', '🎧'],
+                        ['Leo sees a cat on the mat. The cat naps.', 'Where is the cat?', ['On the mat','In a car','At school'], 'On the mat', '🎧'],
+                        ['Zoe packs a snack. She puts grapes in her bag.', 'What snack did Zoe pack?', ['Grapes','Soup','Pizza'], 'Grapes', '🎧'],
+                        ['A bird sits in a tree. It sings a happy song.', 'Who sings?', ['A bird','A dog','A fish'], 'A bird', '🎧'],
+                        ['Nina jumps in puddles. Rain falls softly.', 'What is falling?', ['Rain','Snow','Leaves'], 'Rain', '🎧']
+                    ],
+                    g1: [
+                        ['Sam planted a seed. He watered it each morning. Soon a sprout popped up.', 'What happened after Sam watered the seed?', ['A sprout popped up','The seed became a rock','The pot broke'], 'A sprout popped up', '🎧'],
+                        ['Lena lost her mitten at recess. Her friend found it by the slide and gave it back.', 'Where was the mitten?', ['By the slide','In the lunchbox','Under the bed'], 'By the slide', '🎧'],
+                        ['Omar read a book about frogs. Then he drew a green frog with long legs.', 'What did Omar draw?', ['A frog','A boat','A star'], 'A frog', '🎧'],
+                        ['Zoe baked muffins with Grandma. First they mixed, then they poured, then they baked.', 'What did they do first?', ['Mixed','Baked','Ate'], 'Mixed', '🎧'],
+                        ['The class lined up quietly. They walked to the library to choose books.', 'Where did the class go?', ['Library','Pool','Garden'], 'Library', '🎧']
+                    ],
+                    g2: [
+                        ['Maya wanted to help the garden. She pulled weeds, watered the tomatoes, and checked the soil. By Friday, the plants looked taller.', 'What is the main idea?', ['Maya cared for the garden','Maya bought tomatoes','Maya forgot the garden'], 'Maya cared for the garden', '🎧'],
+                        ['Ben heard thunder while walking home. He opened his umbrella and hurried inside. His shoes were wet, but his backpack stayed dry.', 'Why did Ben open his umbrella?', ['It was raining','It was sunny','He was at the beach'], 'It was raining', '🎧'],
+                        ['Zoe saved coins for a notebook. She counted them after dinner and smiled because she had enough. The next day, she bought the notebook.', 'How did Zoe probably feel?', ['Proud','Angry','Sleepy'], 'Proud', '🎧'],
+                        ['The moon looked bright above the playground. Emma noticed shadows under the swings. She told her brother the light came from the moon.', 'What detail shows it was night?', ['The moon looked bright','The bell rang','The grass was green'], 'The moon looked bright', '🎧'],
+                        ['Luis built a paper bridge. The first bridge bent, so he folded the paper and tried again. The second bridge held ten blocks.', 'What can we infer about Luis?', ['He kept trying','He stopped reading','He disliked building'], 'He kept trying', '🎧']
+                    ]
+                },
+                es: {
+                    k: [
+                        ['Mía tiene una pelota roja. La rueda hacia papá.', '¿De qué color es la pelota?', ['Roja','Azul','Verde'], 'Roja', '🎧'],
+                        ['Leo ve un gato en la alfombra. El gato duerme.', '¿Dónde está el gato?', ['En la alfombra','En un carro','En la escuela'], 'En la alfombra', '🎧'],
+                        ['Zoe guarda una merienda. Pone uvas en su mochila.', '¿Qué merienda guardó Zoe?', ['Uvas','Sopa','Pizza'], 'Uvas', '🎧'],
+                        ['Un pájaro está en un árbol. Canta una canción feliz.', '¿Quién canta?', ['Un pájaro','Un perro','Un pez'], 'Un pájaro', '🎧'],
+                        ['Nina salta en charcos. La lluvia cae suave.', '¿Qué está cayendo?', ['Lluvia','Nieve','Hojas'], 'Lluvia', '🎧']
+                    ],
+                    g1: [
+                        ['Sam plantó una semilla. La regó cada mañana. Pronto salió un brote.', '¿Qué pasó después de regar la semilla?', ['Salió un brote','La semilla fue una roca','La maceta se rompió'], 'Salió un brote', '🎧'],
+                        ['Lena perdió su guante en el recreo. Su amiga lo encontró junto al resbaladero y se lo devolvió.', '¿Dónde estaba el guante?', ['Junto al resbaladero','En la lonchera','Debajo de la cama'], 'Junto al resbaladero', '🎧'],
+                        ['Omar leyó un libro sobre ranas. Luego dibujó una rana verde con patas largas.', '¿Qué dibujó Omar?', ['Una rana','Un bote','Una estrella'], 'Una rana', '🎧'],
+                        ['Zoe hizo panquecitos con la abuela. Primero mezclaron, luego sirvieron, y después hornearon.', '¿Qué hicieron primero?', ['Mezclaron','Hornearon','Comieron'], 'Mezclaron', '🎧'],
+                        ['La clase hizo fila en silencio. Caminaron a la biblioteca para escoger libros.', '¿A dónde fue la clase?', ['Biblioteca','Piscina','Jardín'], 'Biblioteca', '🎧']
+                    ],
+                    g2: [
+                        ['Maya quiso ayudar en el jardín. Quitó hierbas, regó los tomates y revisó la tierra. Para el viernes, las plantas estaban más altas.', '¿Cuál es la idea principal?', ['Maya cuidó el jardín','Maya compró tomates','Maya olvidó el jardín'], 'Maya cuidó el jardín', '🎧'],
+                        ['Ben oyó truenos al caminar a casa. Abrió su paraguas y entró rápido. Sus zapatos estaban mojados, pero su mochila quedó seca.', '¿Por qué abrió Ben el paraguas?', ['Estaba lloviendo','Había sol','Estaba en la playa'], 'Estaba lloviendo', '🎧'],
+                        ['Zoe ahorró monedas para un cuaderno. Las contó después de cenar y sonrió porque tenía suficiente. Al día siguiente compró el cuaderno.', '¿Cómo se sintió Zoe?', ['Orgullosa','Enojada','Con sueño'], 'Orgullosa', '🎧'],
+                        ['La luna brillaba sobre el patio. Emma vio sombras debajo de los columpios. Le dijo a su hermano que la luz venía de la luna.', '¿Qué detalle muestra que era de noche?', ['La luna brillaba','Sonó la campana','El pasto era verde'], 'La luna brillaba', '🎧'],
+                        ['Luis construyó un puente de papel. El primero se dobló, así que plegó el papel e intentó otra vez. El segundo sostuvo diez bloques.', '¿Qué podemos inferir de Luis?', ['Siguió intentando','Dejó de leer','No le gusta construir'], 'Siguió intentando', '🎧']
+                    ]
+                }
+            };
+
+            const phrases = {
+                k: ['Hola','Adiós','Buenos días','Buenas tardes','Por favor','Gracias','De nada','¿Cómo estás?'],
+                g1: ['Estoy bien','Me llamo Zoe','Necesito ayuda','¿Puedo jugar?','Hola, amiga','Hasta mañana','Con permiso','Lo siento'],
+                g2: ['¿Cómo te llamas?','Mucho gusto','¿Me ayudas, por favor?','Quiero leer','No entiendo todavía','¿Dónde está el baño?','Tengo una pregunta','Gracias por ayudarme']
+            };
+
+            const beginning = {
+                en: {
+                    k: [['Which word starts with /m/?',['Moon','Sun','Dog'],'Moon'],['Which word begins with B?',['Ball','Cat','Fish'],'Ball'],['Which word starts with /s/?',['Sun','Pig','Hat'],'Sun'],['Which word begins with T?',['Top','Map','Fan'],'Top'],['Which word starts with /r/?',['Run','Can','Bed'],'Run'],['Which word begins with L?',['Lion','Tiger','Bear'],'Lion'],['Which word starts with /p/?',['Pig','Dog','Cat'],'Pig'],['Which word begins with F?',['Fish','Bug','Cow'],'Fish']],
+                    g1: [['Which word starts with SH?',['Ship','Chip','Trip'],'Ship'],['Which word starts with CH?',['Chair','Share','Thin'],'Chair'],['Which word starts with TH?',['Three','Tree','Free'],'Three'],['Which word begins with BL?',['Blue','Clue','Glue'],'Blue'],['Which word begins with ST?',['Star','Car','Far'],'Star'],['Which word starts with /j/?',['Jump','Bump','Pump'],'Jump'],['Which word begins with CR?',['Crab','Grab','Flag'],'Crab'],['Which word starts like queen?',['Quick','Cake','Sun'],'Quick']],
+                    g2: [['Which word begins with PRE?',['Preview','Review','Undo'],'Preview'],['Which word begins with UN?',['Unpack','Replay','Happy'],'Unpack'],['Which word starts with SCR?',['Screen','Green','Clean'],'Screen'],['Which word begins with SPR?',['Spring','String','Bring'],'Spring'],['Which word starts with /ph/ like phone?',['Photo','Fish','Fan'],'Photo']]
+                },
+                es: {
+                    k: [['¿Qué palabra empieza con M?',['Mamá','Sol','Casa'],'Mamá'],['¿Qué palabra empieza con P?',['Pan','Luna','Gato'],'Pan'],['¿Qué palabra empieza con S?',['Sol','Mesa','Dedo'],'Sol'],['¿Qué palabra empieza con L?',['Luna','Pato','Rosa'],'Luna'],['¿Qué palabra empieza con la sílaba ma?',['Mano','Sapo','Taza'],'Mano'],['¿Qué palabra empieza con la sílaba pa?',['Pato','Gato','Luna'],'Pato'],['¿Qué palabra empieza con N?',['Nube','Flor','Casa'],'Nube'],['¿Qué palabra empieza con B?',['Beso','Mesa','Silla'],'Beso']],
+                    g1: [['¿Qué palabra empieza con CH?',['Chico','Rico','Pico'],'Chico'],['¿Qué palabra empieza con LL?',['Llave','Nave','Sapo'],'Llave'],['¿Qué palabra empieza con TR?',['Tren','Pan','Flor'],'Tren'],['¿Qué palabra empieza con BR?',['Brazo','Vaso','Casa'],'Brazo'],['¿Qué palabra empieza con la sílaba co?',['Coco','Mamá','Piso'],'Coco'],['¿Qué palabra empieza con la sílaba mi?',['Miel','Sol','Gato'],'Miel'],['¿Qué palabra empieza con G?',['Gato','Pato','Luna'],'Gato'],['¿Qué palabra empieza con F?',['Flor','Casa','Mesa'],'Flor']],
+                    g2: [['¿Qué palabra empieza con DES?',['Desatar','Cantar','Leer'],'Desatar'],['¿Qué palabra empieza con PRE?',['Prever','Volver','Saltar'],'Prever'],['¿Qué palabra empieza con SUB?',['Subir','Bajar','Mirar'],'Subir'],['¿Qué palabra empieza con PLA?',['Plato','Tren','Cama'],'Plato'],['¿Qué palabra empieza con GRA?',['Grande','Rápido','Lindo'],'Grande']]
+                }
+            };
+
+            Object.entries(money).forEach(([lang, grades]) => {
+                Object.entries(grades).forEach(([grade, rows]) => {
+                    addCurriculumItems(lang, 'math', grade, null, rows.map(([q, options, a, emoji, audio]) => ({ type: 'quiz', q, options, a, emoji, audio })));
+                });
+            });
+
+            Object.entries(listening).forEach(([lang, grades]) => {
+                Object.entries(grades).forEach(([grade, rows]) => {
+                    addCurriculumItems(lang, 'ela', grade, 'sentences', rows.map(([story, q, options, a, emoji]) => ({ type: 'listening', story, q, options, a, emoji, audio: story })));
+                });
+            });
+
+            Object.entries(phrases).forEach(([grade, rows]) => {
+                addCurriculumItems('es', 'ela', grade, 'sight', rows.map((phrase) => ({ type: 'flashcard', item: phrase, desc: 'Frase útil', emoji: '💬', audio: phrase })));
+            });
+
+            Object.entries(beginning).forEach(([lang, grades]) => {
+                Object.entries(grades).forEach(([grade, rows]) => {
+                    addCurriculumItems(lang, 'ela', grade, 'match', rows.map(([q, options, a]) => ({ type: 'quiz', q, options, a, emoji: '🔤', audio: q })));
+                });
+            });
+        }
+
+        applyLearningSystemCurriculum();
+
         // --- GLOBAL STATE ---
         let state = {
             lang: 'en',
@@ -1273,9 +1454,17 @@
             elaCategory: null,
             persona: null,
             activityIndex: 0,
-            stars: JSON.parse(localStorage.getItem('zoeStats')) || { en: 0, es: 0 },
+            stars: loadStars(),
             princess: null,
-            suppressNextRouteVoice: false
+            suppressNextRouteVoice: false,
+            streak: 0,
+            activityQueue: [],
+            activityQueueKey: '',
+            recentActivities: [],
+            retryQueue: [],
+            currentActivityRef: null,
+            performance: loadLearningPerformance(),
+            completedLessons: loadCompletedLessons()
         };
 
         // Audio Engine
@@ -1345,12 +1534,16 @@
         // SEL Feedback Dictionary
         const feedbackPool = {
             en: {
-                good: ["Great job!", "High five!", "You're a superstar!", "Excellent effort!"],
-                try: ["Nice try! Let's do it again.", "Almost! You've got this.", "We'll get it next time!"]
+                good: ["Great job!", "High five!", "You're a superstar!", "Excellent effort!", "Great reading!", "Royal brain power!"],
+                try: ["Nice try! Let's do it again.", "Almost! You've got this.", "We'll get it next time!", "Good try. One more look!"],
+                streak: ["Three in a row! Bonus star!", "Royal streak! Bonus star!", "Sparkle streak! Bonus star!"],
+                complete: ["You completed this lesson!", "Lesson complete! Lovely work!", "Royal lesson complete!"]
             },
             es: {
-                good: ["¡Gran trabajo!", "¡Choca esos cinco!", "¡Eres una superestrella!", "¡Excelente!"],
-                try: ["¡Buen intento! Otra vez.", "¡Casi! Tú puedes.", "¡Lo lograremos la próxima!"]
+                good: ["¡Gran trabajo!", "¡Choca esos cinco!", "¡Eres una superestrella!", "¡Excelente!", "¡Leíste muy bien!", "¡Poder real!"],
+                try: ["¡Buen intento! Otra vez.", "¡Casi! Tú puedes.", "¡Lo lograremos la próxima!", "Buen intento. ¡Miremos otra vez!"],
+                streak: ["¡Tres seguidas! ¡Estrella extra!", "¡Racha real! ¡Estrella extra!", "¡Racha brillante! ¡Estrella extra!"],
+                complete: ["¡Completaste esta lección!", "¡Lección completa! ¡Muy bien!", "¡Lección real completa!"]
             }
         };
 
@@ -1362,7 +1555,8 @@
                 elaHubTitle: "What do you want to play today?",
                 btnLearnLetters: "Learn Letters", btnMatchSounds: "Match Sounds", btnBlendWords: "Blend Words", btnReadSentences: "Read Sentences", btnSightWords: "Sight Words",
                 k: "Kindergarten", g1: "1st Grade", g2: "2nd Grade",
-                back: "⬅️ Back", next: "Next ➡️", read: "🔊 Listen", progress: "My Stars"
+                back: "⬅️ Back", next: "Next ➡️", read: "🔊 Listen", progress: "My Stars",
+                lessonComplete: "You completed this lesson!", lessonPrompt: "Play again or try something new.", playAgain: "Play Again", chooseNew: "Choose Something New"
             },
             es: {
                 title: "Lee con las Princesas", hubSub: "¡Bienvenida Zoe! ¡Las princesas te ayudarán a aprender!",
@@ -1371,7 +1565,8 @@
                 elaHubTitle: "¿Qué quieres jugar hoy?",
                 btnLearnLetters: "Aprender Letras", btnMatchSounds: "Juntar Sonidos", btnBlendWords: "Armar Palabras", btnReadSentences: "Leer Frases", btnSightWords: "Palabras Clave",
                 k: "Kínder", g1: "1er Grado", g2: "2do Grado",
-                back: "⬅️ Volver", next: "Siguiente ➡️", read: "🔊 Escuchar", progress: "Mis Estrellas"
+                back: "⬅️ Volver", next: "Siguiente ➡️", read: "🔊 Escuchar", progress: "Mis Estrellas",
+                lessonComplete: "¡Completaste esta lección!", lessonPrompt: "Juega otra vez o prueba algo nuevo.", playAgain: "Jugar Otra Vez", chooseNew: "Elegir Algo Nuevo"
             }
         };
 
@@ -1709,7 +1904,9 @@
         }
 
         function toggleLanguage(forceLang = null, options = {}) {
+            const oldLang = state.lang;
             state.lang = forceLang || (state.lang === 'en' ? 'es' : 'en');
+            if (oldLang !== state.lang) resetActivityQueue();
             document.getElementById('lang-toggle-btn').innerText = state.lang === 'en' ? '🇺🇸' : '🇲🇽';
             const appTitle = document.getElementById('app-title');
             if (appTitle) appTitle.innerText = uiText[state.lang].title;
@@ -1733,6 +1930,8 @@
 
         function updateStarDisplay() {
             document.getElementById('star-count-header').innerText = state.stars[state.lang];
+            const streak = document.getElementById('streak-count-header');
+            if (streak) streak.innerText = state.streak;
         }
 
         function unlockAudio() {
@@ -1768,6 +1967,174 @@
             return pool[Math.floor(Math.random() * pool.length)];
         }
 
+        function getRandomMessage(type) {
+            const pool = feedbackPool[state.lang][type] || feedbackPool[state.lang].good;
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        function readJsonStorage(key, fallback) {
+            try {
+                const saved = JSON.parse(localStorage.getItem(key));
+                return saved && typeof saved === 'object' ? saved : fallback;
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        function loadLearningPerformance() {
+            const fallback = { totalCorrect: 0, totalIncorrect: 0, byKey: {}, missedItems: {} };
+            const saved = readJsonStorage('zoeLearningPerformance', fallback);
+            return {
+                totalCorrect: Number(saved.totalCorrect) || 0,
+                totalIncorrect: Number(saved.totalIncorrect) || 0,
+                byKey: saved.byKey && typeof saved.byKey === 'object' ? saved.byKey : {},
+                missedItems: saved.missedItems && typeof saved.missedItems === 'object' ? saved.missedItems : {}
+            };
+        }
+
+        function loadStars() {
+            const saved = readJsonStorage('zoeStats', { en: 0, es: 0 });
+            return {
+                en: Number(saved.en) || 0,
+                es: Number(saved.es) || 0
+            };
+        }
+
+        function saveLearningPerformance() {
+            localStorage.setItem('zoeLearningPerformance', JSON.stringify(state.performance));
+        }
+
+        function loadCompletedLessons() {
+            const saved = readJsonStorage('zoeCompletedLessons', { sets: {}, total: 0, badgeUnlocked: false });
+            return {
+                sets: saved.sets && typeof saved.sets === 'object' ? saved.sets : {},
+                total: Number(saved.total) || 0,
+                badgeUnlocked: Boolean(saved.badgeUnlocked)
+            };
+        }
+
+        function saveCompletedLessons() {
+            localStorage.setItem('zoeCompletedLessons', JSON.stringify(state.completedLessons));
+        }
+
+        function getActivityKey() {
+            return [state.lang, state.subject || 'hub', state.grade || 'none', state.elaCategory || 'all'].join('|');
+        }
+
+        function getCurrentActivityList() {
+            if (state.subject === 'ela') {
+                return curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory] || [];
+            }
+            return curriculum[state.lang]?.[state.subject]?.[state.grade] || [];
+        }
+
+        function getActivityIdentifier(data, index) {
+            if (!data) return `${getActivityKey()}|missing|${index}`;
+            const label = data.q || data.story || data.text || data.item || data.audio || data.type || 'activity';
+            return `${getActivityKey()}|${data.type}|${index}|${label}`;
+        }
+
+        function shuffleArray(items) {
+            const copy = [...items];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function rememberActivity(identifier) {
+            if (!identifier) return;
+            state.recentActivities = [identifier, ...state.recentActivities.filter((item) => item !== identifier)].slice(0, 6);
+        }
+
+        function resetActivityQueue() {
+            const list = getCurrentActivityList();
+            const key = getActivityKey();
+            let queue = shuffleArray(list.map((_, index) => index));
+            if (queue.length > 1 && state.recentActivities.includes(getActivityIdentifier(list[queue[0]], queue[0]))) {
+                const swapIndex = queue.findIndex((index) => !state.recentActivities.includes(getActivityIdentifier(list[index], index)));
+                if (swapIndex > 0) [queue[0], queue[swapIndex]] = [queue[swapIndex], queue[0]];
+            }
+            state.activityQueueKey = key;
+            state.activityQueue = queue;
+            state.activityIndex = 0;
+        }
+
+        function ensureActivityQueue() {
+            if (state.activityQueueKey !== getActivityKey() || state.activityQueue.length !== getCurrentActivityList().length) {
+                resetActivityQueue();
+            }
+        }
+
+        function findDueRetry(list) {
+            const key = getActivityKey();
+            const retry = state.retryQueue.find((item) => item.key === key && item.dueAfter <= 0);
+            if (!retry) return null;
+            const index = list.findIndex((item, itemIndex) => getActivityIdentifier(item, itemIndex) === retry.id);
+            return index >= 0 ? { index, retry } : null;
+        }
+
+        function getCurrentActivity() {
+            const list = getCurrentActivityList();
+            if (!list.length) return null;
+            ensureActivityQueue();
+            const dueRetry = findDueRetry(list);
+            const index = dueRetry ? dueRetry.index : state.activityQueue[Math.min(state.activityIndex, state.activityQueue.length - 1)];
+            const data = list[index];
+            const ref = { data, index, id: getActivityIdentifier(data, index), key: getActivityKey(), isRetry: Boolean(dueRetry) };
+            state.currentActivityRef = ref;
+            rememberActivity(ref.id);
+            return ref;
+        }
+
+        function recordPerformance(isCorrect) {
+            const ref = state.currentActivityRef;
+            if (!ref?.id) return;
+            const stats = state.performance;
+            const category = ref.key;
+            stats.byKey[category] = stats.byKey[category] || { correct: 0, incorrect: 0 };
+            if (isCorrect) {
+                stats.totalCorrect++;
+                stats.byKey[category].correct++;
+                if (ref.isRetry) {
+                    if (stats.missedItems[ref.id]) stats.missedItems[ref.id] = Math.max(0, stats.missedItems[ref.id] - 1);
+                    state.retryQueue = state.retryQueue.filter((item) => item.id !== ref.id);
+                }
+            } else {
+                stats.totalIncorrect++;
+                stats.byKey[category].incorrect++;
+                stats.missedItems[ref.id] = (stats.missedItems[ref.id] || 0) + 1;
+                addRetryItem(ref);
+            }
+            saveLearningPerformance();
+        }
+
+        function addRetryItem(ref) {
+            const existing = state.retryQueue.find((item) => item.id === ref.id);
+            if (existing) {
+                existing.dueAfter = 2;
+                existing.attempts = Math.min(3, existing.attempts + 1);
+            } else {
+                state.retryQueue.push({ key: ref.key, id: ref.id, dueAfter: 2, attempts: 1 });
+            }
+            state.retryQueue = state.retryQueue.slice(-10);
+        }
+
+        function tickRetryQueue() {
+            state.retryQueue.forEach((item) => {
+                if (item.key === getActivityKey()) item.dueAfter--;
+            });
+        }
+
+        function subjectGuidePrincess() {
+            if (state.persona === 'elena') return getPrincessByName('Elena') || getPrincessByName('Tiana') || state.princess;
+            if (state.subject === 'math') return getPrincessByName('Elsa') || state.princess;
+            if (state.subject === 'science') return getPrincessByName('Rapunzel') || state.princess;
+            if (state.subject === 'ela') return getPrincessByName('Belle') || state.princess;
+            return state.princess;
+        }
+
         function subjectVoiceId(subject, persona) {
             if (persona === 'elena') return 'SUBJECT_SPANISH_01';
             if (subject === 'math') return 'SUBJECT_MATH_01';
@@ -1801,16 +2168,13 @@
                 flashcard: 'ACTIVITY_INTRO_FLASHCARD_01',
                 quiz: 'ACTIVITY_INTRO_QUIZ_01',
                 blend: 'ACTIVITY_INTRO_BLEND_01',
-                sentence: 'ACTIVITY_INTRO_SENTENCE_01'
+                sentence: 'ACTIVITY_INTRO_SENTENCE_01',
+                listening: 'ACTIVITY_INTRO_SENTENCE_01'
             }[data.type] || null;
         }
 
         function getCurrentActivityData() {
-            const dataset = state.subject === 'ela'
-                ? curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory]
-                : curriculum[state.lang]?.[state.subject]?.[state.grade];
-            if (!dataset || dataset.length === 0) return null;
-            return dataset[Math.min(state.activityIndex, dataset.length - 1)];
+            return state.currentActivityRef?.data || getCurrentActivity()?.data || null;
         }
 
         function playActivityIntro(data = getCurrentActivityData(), options = {}) {
@@ -1838,9 +2202,11 @@
                 });
                 return;
             }
-            if (data.type === 'sentence') {
+            if (data.type === 'sentence' || data.type === 'listening') {
                 playVoiceForCurrentLanguage(id, {
-                    fallbackText: state.lang === 'en' ? 'Tap a word to hear it.' : 'Toca una palabra para escucharla.',
+                    fallbackText: data.type === 'listening'
+                        ? (data.audio || data.story)
+                        : (state.lang === 'en' ? 'Tap a word to hear it.' : 'Toca una palabra para escucharla.'),
                     interrupt: options.interrupt ?? true
                 });
             }
@@ -1913,14 +2279,19 @@
             container.innerHTML = ''; 
             stopVoicePlayback();
 
-            if (params.subject) state.subject = params.subject;
+            if (params.subject && params.subject !== state.subject) {
+                state.subject = params.subject;
+                resetActivityQueue();
+            }
             if (params.grade) {
+                const changed = params.grade !== state.grade;
                 state.grade = params.grade;
-                state.activityIndex = 0;
+                if (changed) resetActivityQueue();
             }
             if (params.elaCategory) {
+                const changed = params.elaCategory !== state.elaCategory;
                 state.elaCategory = params.elaCategory;
-                state.activityIndex = 0;
+                if (changed) resetActivityQueue();
             }
             if (params.persona) state.persona = params.persona;
 
@@ -1939,9 +2310,9 @@
             const princess = state.princess;
             const introText = `Hello Zoe, I am ${princess.name}`;
             const readingPrincess = getPrincessByName('Belle') || princess;
-            const mathPrincess = getPrincessByName('Rapunzel') || princess;
-            const sciencePrincess = getPrincessByName('Pocahontas') || princess;
-            const spanishPrincess = getPrincessByName('Tiana') || princess;
+            const mathPrincess = getPrincessByName('Elsa') || princess;
+            const sciencePrincess = getPrincessByName('Rapunzel') || princess;
+            const spanishPrincess = getPrincessByName('Elena') || getPrincessByName('Tiana') || princess;
             container.innerHTML = `
                 <div class="home-shell animate-pop">
                     <div class="magic-book" aria-hidden="true">📖</div>
@@ -2060,10 +2431,8 @@
         // --- ENGINE: DYNAMIC RENDERER ---
         function renderActivity(container) {
             const t = uiText[state.lang];
-            const princess = state.princess;
-            const dataset = state.subject === 'ela'
-                ? curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory]
-                : curriculum[state.lang]?.[state.subject]?.[state.grade];
+            const princess = subjectGuidePrincess();
+            const dataset = getCurrentActivityList();
             if (!dataset || dataset.length === 0) {
                 container.innerHTML = `<div class="text-center pt-24"><p class="text-3xl font-bold text-slate-500">✨ More activities coming soon!</p><button onclick="navigate('hub')" class="mt-8 btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-4 rounded-full">${uiText[state.lang].back}</button></div>`;
                 playVoiceForCurrentLanguage('MORE_ACTIVITIES_SOON_01', {
@@ -2071,7 +2440,12 @@
                 });
                 return;
             }
-            const data = dataset[Math.min(state.activityIndex, dataset.length - 1)];
+            const activityRef = getCurrentActivity();
+            const data = activityRef?.data;
+            if (!data) {
+                container.innerHTML = `<div class="text-center pt-24"><p class="text-3xl font-bold text-slate-500">✨ More activities coming soon!</p><button onclick="navigate('hub')" class="mt-8 btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-4 rounded-full">${uiText[state.lang].back}</button></div>`;
+                return;
+            }
 
             const backTarget = state.subject === 'ela' ? 'elaHub' : 'gradeSelect';
             let html = `<button onclick="navigate('${backTarget}')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl z-20">${t.back}</button>`;
@@ -2082,6 +2456,7 @@
             
             // Layout Shell
             html += `<div class="animate-pop text-center max-w-3xl mx-auto pt-16 md:pt-10">`;
+            html += `<div class="mb-4 text-sm font-extrabold text-slate-500">${Math.min(state.activityIndex + 1, dataset.length)} / ${dataset.length}${activityRef.isRetry ? ' • Review' : ''}</div>`;
 
             if (data.type === 'flashcard') {
                 html += `
@@ -2111,6 +2486,30 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         ${opts.map((opt) => `
                             <button onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-pink-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                if (state.suppressNextRouteVoice) state.suppressNextRouteVoice = false;
+                else playActivityIntro(data);
+            }
+            else if (data.type === 'listening') {
+                const opts = shuffleArray(data.options || []);
+                html += `
+                    <div class="bg-white border-4 border-sky-200 rounded-[3rem] p-8 shadow-xl mb-8">
+                        <div class="text-6xl mb-4">${data.emoji || '🎧'}</div>
+                        <p class="text-2xl md:text-3xl font-bold text-slate-700 leading-snug mb-6">${data.story}</p>
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio || data.story)} })' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-xl px-7 py-4 rounded-full inline-flex items-center space-x-2">
+                            <span>🔊</span> <span>${t.read}</span>
+                        </button>
+                    </div>
+                    <div class="bg-white/90 border-4 border-pink-100 rounded-[2rem] p-6 shadow-lg mb-8">
+                        <p class="text-3xl font-extrabold text-slate-800">${data.q}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        ${opts.map((opt) => `
+                            <button onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-sky-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
                                 ${opt}
                             </button>
                         `).join('')}
@@ -2168,34 +2567,105 @@
             initializePrincessImages(container);
         }
 
-        window.nextActivity = function() {
-            const list = state.subject === 'ela'
-                ? (curriculum[state.lang]?.ela?.[state.grade]?.[state.elaCategory] || [])
-                : (curriculum[state.lang]?.[state.subject]?.[state.grade] || []);
-            if (list.length === 0) { navigate(state.subject === 'ela' ? 'elaHub' : 'gradeSelect'); return; }
-            const nextIndex = (state.activityIndex + 1) % list.length;
-            const wrapped = nextIndex < state.activityIndex || (state.activityIndex === 0 && list.length === 1);
-            state.activityIndex = nextIndex;
-            if (wrapped && list.length > 1) {
-                playVoiceForCurrentLanguage('ROUND_COMPLETE_01', {
-                    fallbackText: state.lang === 'en' ? 'Round complete! Starting over.' : '¡Ronda completa! Empezamos de nuevo.'
-                });
-                // Brief "round complete" toast before re-rendering
-                const toast = document.createElement('div');
-                toast.textContent = state.lang === 'en' ? '🌟 Round complete! Starting over…' : '🌟 ¡Ronda completa! Empezando de nuevo…';
-                toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#1e3a5f;padding:1rem 2rem;border-radius:2rem;font-size:1.5rem;font-weight:bold;z-index:999;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
-                document.body.appendChild(toast);
-                setTimeout(() => { document.body.removeChild(toast); navigate('activity'); }, 1400);
-            } else {
-                navigate('activity');
+        function completeLessonSet() {
+            const key = getActivityKey();
+            state.completedLessons.sets[key] = (state.completedLessons.sets[key] || 0) + 1;
+            state.completedLessons.total++;
+            saveCompletedLessons();
+
+            const message = getRandomMessage('complete');
+            playVoiceForCurrentLanguage('ROUND_COMPLETE_01', { fallbackText: message });
+            fireConfetti();
+
+            if (state.completedLessons.total >= 10 && !state.completedLessons.badgeUnlocked) {
+                state.completedLessons.badgeUnlocked = true;
+                saveCompletedLessons();
+                setTimeout(() => showSimpleToast(state.lang === 'en' ? '🏅 New royal badge unlocked!' : '🏅 ¡Nueva insignia real desbloqueada!'), 900);
             }
+
+            renderLessonComplete(document.getElementById('app-container'));
+        }
+
+        function showSimpleToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#1e3a5f;padding:1rem 2rem;border-radius:2rem;font-size:1.5rem;font-weight:bold;z-index:999;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
+            document.body.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) document.body.removeChild(toast); }, 1800);
+        }
+
+        function renderLessonComplete(container) {
+            const t = uiText[state.lang];
+            const princess = subjectGuidePrincess();
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-2xl mx-auto pt-16">
+                    <div class="mb-6 flex justify-center">
+                        <div class="rounded-[2rem] border-4 bg-white/95 p-3 shadow-lg" style="border-color: ${princess.themeColor};">
+                            ${renderPrincessImage(princess, "h-28 w-28 md:h-32 md:w-32 rounded-[1.5rem] object-cover bg-white")}
+                        </div>
+                    </div>
+                    <div class="bg-white border-4 border-yellow-300 rounded-[3rem] p-10 shadow-xl">
+                        <div class="text-8xl mb-5">🏆</div>
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-800 mb-4">${t.lessonComplete}</h2>
+                        <p class="text-2xl text-slate-600 font-semibold mb-8">${t.lessonPrompt}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <button onclick="playAgain()" class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl py-5 rounded-[2rem]">${t.playAgain}</button>
+                            <button onclick="chooseSomethingNew()" class="btn-kid bg-blue-400 hover:bg-blue-500 text-white font-bold text-2xl py-5 rounded-[2rem]">${t.chooseNew}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initializePrincessImages(container);
+        }
+
+        window.playAgain = function() {
+            resetActivityQueue();
+            navigate('activity');
+        };
+
+        window.chooseSomethingNew = function() {
+            navigate(state.subject === 'ela' ? 'elaHub' : 'gradeSelect');
+        };
+
+        window.nextActivity = function() {
+            const list = getCurrentActivityList();
+            if (list.length === 0) { navigate(state.subject === 'ela' ? 'elaHub' : 'gradeSelect'); return; }
+
+            if (state.currentActivityRef?.isRetry) {
+                state.currentActivityRef = null;
+                navigate('activity');
+                return;
+            }
+
+            tickRetryQueue();
+            const nextIndex = state.activityIndex + 1;
+            if (nextIndex >= state.activityQueue.length) {
+                completeLessonSet();
+                return;
+            }
+            state.activityIndex = nextIndex;
+            navigate('activity');
         }
 
         window.handleQuizAnswer = function(selected, target) {
             if (selected === target) {
+                state.streak++;
+                updateStarDisplay();
+                recordPerformance(true);
                 showFeedback(true);
+                if (state.streak > 0 && state.streak % 3 === 0) {
+                    setTimeout(() => {
+                        state.stars[state.lang]++;
+                        saveStars();
+                        showSimpleToast(getRandomMessage('streak'));
+                        fireConfetti();
+                    }, 600);
+                }
                 setTimeout(nextActivity, 1800);
             } else {
+                state.streak = 0;
+                updateStarDisplay();
+                recordPerformance(false);
                 showFeedback(false);
             }
         };
