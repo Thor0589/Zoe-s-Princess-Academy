@@ -116,3 +116,53 @@ Replaced the starter curriculum (≤6 items per array) with a complete multi-gra
 - Add audio recordings for Spanish accented characters (á, é, í, ó, ú)
 - Add story-based reading passages (multi-sentence comprehension)
 - Add geometry and data/graphing for G2 math
+
+## 2026-04-26 Voice MP3 Assets and Runtime Wiring
+
+### Current Status
+- Active project folder is `/Users/fernandoceja/Documents/AI-Projects/Zoe’s Princess Academy`.
+- Main app file is now `index.html`.
+- Branch `main` is clean and aligned with `origin/main`.
+- Latest pushed commit is `29b0872 feat(audio): wire voice assets into app`.
+- Prior pushed voice asset commit is `783416b feat(audio): add cleaned voice asset package`.
+- In-app browser was left on `http://127.0.0.1:8777/index.html`; the temporary preview server was stopped after validation.
+
+### Completed Work
+- Added a cleaned EN/ES MP3 voice asset package:
+  - 91 concrete MP3 files under `assets/audio/EN/` and `assets/audio/ES/`.
+  - `voice-file-map.json` with 91 concrete paths and dynamic IDs marked for generated-later curriculum/state audio.
+  - `voice-script-manifest.md` and `voice-implementation-plan.md`.
+  - `.gitignore` ignores `.DS_Store`.
+- Cleaned the original audio package before commit:
+  - removed `.DS_Store` files,
+  - converted mislabeled WAV/RIFF payloads into real MP3 files,
+  - reconciled filename/path casing against `voice-file-map.json`.
+- Wired MP3 playback into `index.html`:
+  - added lightweight voice manager functions `playVoice`, `playVoiceForCurrentLanguage`, path resolution, stop/replace behavior, and `window.zoeVoiceDiagnostics()`;
+  - loads `voice-file-map.json` over HTTP with an inline fallback map for static/file preview resilience;
+  - keeps existing `speechSynthesis` as fallback for blocked/missing MP3s and dynamic curriculum text;
+  - wired MP3 triggers for app boot/home, princess greeting, subject selection, grade selection, ELA hub/categories, activity intros, feedback, round complete, progress, language switching, and empty/image fallback states.
+- Validation completed before commit:
+  - JS parse check passed for both script blocks;
+  - `git diff --check` passed;
+  - audio map audit showed 91 expected concrete paths, 91 actual MP3s, 0 missing, 0 extra;
+  - local preview loaded without app console errors;
+  - browser clicks verified EN and ES MP3 requests returned HTTP 200;
+  - dynamic Listen/Speak controls still fall back through `speechSynthesis` without requesting fake curriculum MP3 paths.
+
+### Key Decisions
+- Kept the app static: no backend and no build system.
+- Kept `index.html` as the only runtime code change for audio wiring.
+- Did not regenerate or rename audio during wiring; asset cleanup was already committed separately.
+- Preserved `speechSynthesis` instead of replacing it, because curriculum item audio remains dynamic and browser autoplay can still block MP3 playback.
+- Used `voice-file-map.json` as the HTTP source of truth when available, with a matching inline fallback so `file://` or restricted local preview still has deterministic paths.
+- Treated dynamic voice IDs (`CURRICULUM_ITEM_AUDIO_DYNAMIC`, `BLEND_SOUND_DYNAMIC`, `BLEND_WORD_DYNAMIC`, `SENTENCE_WORD_DYNAMIC`, `PROGRESS_STARS_DYNAMIC`) as fallback-only until generated per-item files exist.
+
+### Blockers
+- No current repo blockers.
+- Manual device testing remains useful on iPad/iPhone Safari because autoplay and gesture-gated audio behavior can differ from desktop preview.
+- The home princess greeting text remains in English even after switching UI to Spanish because the existing princess data is English; this predates the voice wiring and is a future localization polish item.
+
+### Next Intended Step
+- Test the pushed GitHub Pages/static deployment in a real browser, especially Safari/iPad, using `window.zoeVoiceDiagnostics()` and a quick EN/ES click path.
+- If audio behavior is stable, consider a follow-up pass for Spanish princess greeting copy and optional per-curriculum generated audio files.
