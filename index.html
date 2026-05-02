@@ -14,20 +14,31 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             min-height: 100vh;
+            min-height: 100svh;
             margin: 0;
             padding: 8px; /* Space for the gold frame */
             box-sizing: border-box;
+            overflow-x: hidden;
         }
         
         .app-frame {
             border: 4px solid #ebd373;
             border-radius: 16px;
             min-height: calc(100vh - 16px);
+            min-height: calc(100svh - 16px);
             box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.1);
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #app-container {
+            box-sizing: border-box;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         /* Hardware Accelerated Animations */
@@ -48,6 +59,11 @@
             box-shadow: 0 2px 0px rgba(0,0,0,0.1);
         }
         .hidden { display: none !important; }
+
+        button:focus-visible {
+            outline: 4px solid rgba(14, 165, 233, 0.55);
+            outline-offset: 4px;
+        }
 
         .home-shell {
             max-width: 960px;
@@ -182,8 +198,223 @@
             height: 160px;
         }
 
+        .academy-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 8px 0 16px;
+        }
+
+        .academy-chip {
+            border: 2px solid rgba(148, 163, 184, 0.35);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.86);
+            color: #334155;
+            font-weight: 800;
+            padding: 10px 14px;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .room-card {
+            min-height: 190px;
+            border: 0;
+            border-radius: 28px;
+            padding: 18px;
+            text-align: left;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 0 rgba(31, 41, 55, 0.10), 0 18px 24px rgba(31, 41, 55, 0.12);
+        }
+
+        .room-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(15,23,42,0.28), rgba(15,23,42,0.02));
+            pointer-events: none;
+        }
+
+        .room-content {
+            position: relative;
+            z-index: 2;
+            max-width: 64%;
+        }
+
+        .room-title {
+            display: block;
+            font-size: clamp(1.45rem, 2.7vw, 2.15rem);
+            line-height: 1.05;
+            font-weight: 900;
+            text-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+        }
+
+        .room-desc {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.98rem;
+            line-height: 1.25;
+            font-weight: 800;
+            opacity: 0.94;
+        }
+
+        .room-badge {
+            display: inline-flex;
+            margin-top: 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.24);
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            font-weight: 900;
+        }
+
+        .room-card .subject-art {
+            position: absolute;
+            right: 12px;
+            bottom: -10px;
+            z-index: 1;
+            width: 128px;
+            height: 128px;
+        }
+
+        .parent-shell {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 10px 0 24px;
+            color: #1f2937;
+        }
+
+        .parent-panel {
+            background: rgba(255,255,255,0.94);
+            border: 1px solid rgba(148,163,184,0.35);
+            border-radius: 12px;
+            box-shadow: 0 10px 28px rgba(15,23,42,0.08);
+            padding: 18px;
+        }
+
+        .parent-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-box {
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 14px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            color: #0f172a;
+            font-size: 1.7rem;
+            font-weight: 900;
+        }
+
+        .adult-button {
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-weight: 900;
+            background: #0f172a;
+            color: white;
+        }
+
+        .adult-button.secondary { background: #e2e8f0; color: #0f172a; }
+        .adult-button.danger { background: #b91c1c; color: white; }
+
+        .mini-grid, .reward-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .kid-option {
+            min-height: 92px;
+            border-radius: 24px;
+            border: 4px solid rgba(226,232,240,0.95);
+            background: white;
+            padding: 18px;
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 900;
+            color: #334155;
+        }
+
+        .ten-frame {
+            display: grid;
+            grid-template-columns: repeat(5, 42px);
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .ten-dot {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 3px solid #fbbf24;
+            background: #fff7ed;
+        }
+
+        .ten-dot.filled { background: #fb7185; border-color: #e11d48; }
+        .ten-dot.crossed { background: #e2e8f0; border-color: #94a3b8; position: relative; }
+        .ten-dot.crossed::after { content: "×"; position: absolute; inset: 0; display: grid; place-items: center; color: #475569; font-weight: 900; }
+
+        .sort-bin {
+            min-height: 160px;
+            border: 4px dashed rgba(148, 163, 184, 0.6);
+            border-radius: 24px;
+            background: rgba(255,255,255,0.78);
+            padding: 14px;
+        }
+
         @media (max-width: 700px) {
+            body { padding: 4px; }
+            header { gap: 4px; }
+            header > div:last-child {
+                gap: 4px !important;
+                max-width: 48vw;
+                justify-content: flex-end;
+                overflow: hidden;
+            }
+            header > div:last-child button[aria-label="Parent Dashboard"] {
+                display: none !important;
+            }
+            header > div:last-child button {
+                font-size: 1.25rem !important;
+                padding: 0.35rem 0.45rem !important;
+                border-radius: 0.75rem !important;
+            }
+            header > div:last-child > div {
+                padding: 0.38rem 0.55rem !important;
+            }
+            header > div.absolute {
+                max-width: 34vw;
+                overflow: hidden;
+            }
             .home-shell { padding-top: 0; }
+            .home-title {
+                font-size: 1.72rem;
+                line-height: 1.08;
+                max-width: calc(100vw - 36px);
+                overflow-wrap: break-word;
+            }
+            .home-subtitle {
+                font-size: 0.95rem;
+                max-width: calc(100vw - 36px);
+            }
             .magic-book {
                 width: 84px;
                 height: 58px;
@@ -195,12 +426,27 @@
                 margin-bottom: 12px;
                 font-size: 0.84rem;
                 padding: 6px 10px;
+                max-width: calc(100vw - 36px);
+                white-space: normal;
             }
+            .academy-toolbar { width: 100%; }
             .subjects-grid { grid-template-columns: 1fr; }
+            .room-grid, .parent-grid, .mini-grid, .reward-grid {
+                grid-template-columns: 1fr;
+            }
             .subject-card {
                 min-height: 104px;
                 padding: 18px 20px;
                 border-radius: 22px;
+            }
+            .room-card { min-height: 150px; border-radius: 22px; }
+            .room-content { max-width: 72%; }
+            .room-title { font-size: 1.38rem; }
+            .room-desc { font-size: 0.88rem; }
+            .room-card .subject-art {
+                width: 104px;
+                height: 104px;
+                right: 8px;
             }
             .subject-label {
                 max-width: 68%;
@@ -216,6 +462,12 @@
                 right: 8px;
                 bottom: -10px;
             }
+            .app-frame { border-width: 3px; }
+            #app-container { padding-left: 0.75rem; padding-right: 0.75rem; }
+            .parent-shell { padding-top: 2px; }
+            .adult-button, .academy-chip { width: 100%; }
+            .ten-frame { grid-template-columns: repeat(5, 34px); gap: 6px; }
+            .ten-dot { width: 34px; height: 34px; }
         }
     </style>
 </head>
@@ -247,6 +499,7 @@
                 <span id="streak-count-header" class="text-lg">0</span>
                 <span class="ml-1 text-xl">🔥</span>
             </div>
+            <button onclick="navigate('parentDashboard')" aria-label="Parent Dashboard" class="text-2xl hover:scale-110 transition-transform btn-kid bg-white rounded-xl px-3 py-2 border border-slate-200">📊</button>
             <div class="flex items-center bg-[#fff8d6] px-4 py-2 rounded-full border border-[#ebd373] font-bold text-yellow-700 cursor-pointer shadow-sm hover:bg-[#ffedb3] transition-colors" onclick="navigate('progress')">
                 <span id="star-count-header" class="mr-2 text-lg">0</span>
                 <span class="text-xl">⭐</span>
@@ -1464,7 +1717,18 @@
             retryQueue: [],
             currentActivityRef: null,
             performance: loadLearningPerformance(),
-            completedLessons: loadCompletedLessons()
+            completedLessons: loadCompletedLessons(),
+            missedReviewQueue: loadMissedReviewQueue(),
+            mastery: loadSkillMastery(),
+            unlockedRewards: loadUnlockedRewards(),
+            practiceSessions: loadPracticeSessions(),
+            currentReviewItem: null,
+            currentMiniGame: null,
+            currentMiniRound: null,
+            currentStory: null,
+            currentVisualMath: null,
+            currentScienceSort: null,
+            currentSpanishPractice: null
         };
 
         // Audio Engine
@@ -2017,6 +2281,280 @@
             localStorage.setItem('zoeCompletedLessons', JSON.stringify(state.completedLessons));
         }
 
+        function loadMissedReviewQueue() {
+            const saved = readJsonStorage('zoeMissedReviewQueue', { items: {} });
+            return { items: saved.items && typeof saved.items === 'object' ? saved.items : {} };
+        }
+
+        function saveMissedReviewQueue() {
+            localStorage.setItem('zoeMissedReviewQueue', JSON.stringify(state.missedReviewQueue));
+        }
+
+        function loadSkillMastery() {
+            const saved = readJsonStorage('zoeSkillMastery', { skills: {} });
+            return { skills: saved.skills && typeof saved.skills === 'object' ? saved.skills : {} };
+        }
+
+        function saveSkillMastery() {
+            localStorage.setItem('zoeSkillMastery', JSON.stringify(state.mastery));
+        }
+
+        function loadUnlockedRewards() {
+            const saved = readJsonStorage('zoeUnlockedRewards', { unlocked: {} });
+            return { unlocked: saved.unlocked && typeof saved.unlocked === 'object' ? saved.unlocked : {} };
+        }
+
+        function saveUnlockedRewards() {
+            localStorage.setItem('zoeUnlockedRewards', JSON.stringify(state.unlockedRewards));
+        }
+
+        function loadPracticeSessions() {
+            const saved = readJsonStorage('zoePracticeSessions', { total: 0, lastPracticed: null, days: {} });
+            return {
+                total: Number(saved.total) || 0,
+                lastPracticed: saved.lastPracticed || null,
+                days: saved.days && typeof saved.days === 'object' ? saved.days : {}
+            };
+        }
+
+        function savePracticeSessions() {
+            localStorage.setItem('zoePracticeSessions', JSON.stringify(state.practiceSessions));
+        }
+
+        function markPracticeSession() {
+            const today = new Date().toISOString().slice(0, 10);
+            if (!state.practiceSessions.days[today]) {
+                state.practiceSessions.days[today] = true;
+                state.practiceSessions.total++;
+            }
+            state.practiceSessions.lastPracticed = new Date().toISOString();
+            savePracticeSessions();
+        }
+
+        function splitActivityKey(key) {
+            const [lang, subject, grade, category] = String(key || '').split('|');
+            return { lang, subject, grade, category };
+        }
+
+        function getActivitySkillKey(ref = state.currentActivityRef) {
+            if (!ref) return getActivityKey() + '|activity';
+            return `${ref.key}|${ref.data?.type || 'activity'}`;
+        }
+
+        function statusForStats(attempts, correct, incorrect, streak = 0, repeatedMisses = 0) {
+            if (!attempts) return 'Not Started';
+            const accuracy = correct / attempts;
+            if ((attempts >= 3 && accuracy < 0.6) || repeatedMisses >= 2) return 'Needs Review';
+            if (accuracy >= 0.9 && attempts >= 5 && streak >= 3) return 'Mastered';
+            if (accuracy >= 0.8 && attempts >= 4) return 'Strong';
+            return 'Practicing';
+        }
+
+        function childMasteryLabel(status) {
+            if (status === 'Mastered') return state.lang === 'en' ? 'Royal Mastery' : 'Maestría Real';
+            if (status === 'Strong') return state.lang === 'en' ? 'Getting Strong' : 'Más Fuerte';
+            return state.lang === 'en' ? 'Learning' : 'Aprendiendo';
+        }
+
+        function updateSkillMastery(isCorrect, ref = state.currentActivityRef) {
+            if (!ref?.id) return;
+            const key = getActivitySkillKey(ref);
+            const skill = state.mastery.skills[key] || {
+                attempts: 0, correct: 0, incorrect: 0, streak: 0,
+                lastPracticed: null, masteryScore: 0, status: 'Not Started'
+            };
+            skill.attempts++;
+            if (isCorrect) {
+                skill.correct++;
+                skill.streak++;
+            } else {
+                skill.incorrect++;
+                skill.streak = 0;
+            }
+            skill.lastPracticed = new Date().toISOString();
+            skill.masteryScore = Math.round((skill.correct / Math.max(1, skill.attempts)) * 100);
+            const missed = state.performance.missedItems?.[ref.id] || 0;
+            skill.status = statusForStats(skill.attempts, skill.correct, skill.incorrect, skill.streak, missed);
+            state.mastery.skills[key] = skill;
+            saveSkillMastery();
+        }
+
+        function getDueReviewItems(includeFuture = false) {
+            const now = Date.now();
+            return Object.values(state.missedReviewQueue.items || {})
+                .filter((item) => item.reviewStatus !== 'mastered' && (includeFuture || !item.nextReviewAt || new Date(item.nextReviewAt).getTime() <= now))
+                .sort((a, b) => (b.missCount || 0) - (a.missCount || 0) || new Date(a.nextReviewAt || 0) - new Date(b.nextReviewAt || 0));
+        }
+
+        function findActivityByReviewItem(reviewItem) {
+            const parts = splitActivityKey(reviewItem.key);
+            const list = parts.subject === 'ela'
+                ? curriculum[parts.lang]?.ela?.[parts.grade]?.[parts.category]
+                : curriculum[parts.lang]?.[parts.subject]?.[parts.grade];
+            if (!Array.isArray(list)) return null;
+            const index = list.findIndex((item, itemIndex) => getActivityIdentifierForKey(reviewItem.key, item, itemIndex) === reviewItem.id);
+            return index >= 0 ? { data: list[index], index, list, parts } : null;
+        }
+
+        function getActivityIdentifierForKey(key, data, index) {
+            if (!data) return `${key}|missing|${index}`;
+            const label = data.q || data.story || data.text || data.item || data.audio || data.type || 'activity';
+            return `${key}|${data.type}|${index}|${label}`;
+        }
+
+        function saveMissedReview(ref, wrongAnswer) {
+            if (!ref?.id || !ref.data) return;
+            const data = ref.data;
+            const now = new Date();
+            const existing = state.missedReviewQueue.items[ref.id];
+            const parts = splitActivityKey(ref.key);
+            const nextMinutes = existing ? Math.min(60 * 24, 10 * (existing.missCount + 1)) : 5;
+            state.missedReviewQueue.items[ref.id] = {
+                id: ref.id,
+                key: ref.key,
+                subject: parts.subject,
+                grade: parts.grade,
+                category: parts.category,
+                activityType: data.type,
+                prompt: data.q || data.story || data.text || data.item || '',
+                correctAnswer: data.a || data.item || data.text || '',
+                wrongAnswer: wrongAnswer || '',
+                firstMissedAt: existing?.firstMissedAt || now.toISOString(),
+                lastMissedAt: now.toISOString(),
+                missCount: (existing?.missCount || 0) + 1,
+                correctReviews: existing?.correctReviews || 0,
+                reviewStatus: 'active',
+                nextReviewAt: new Date(now.getTime() + nextMinutes * 60000).toISOString()
+            };
+            saveMissedReviewQueue();
+        }
+
+        function updateMissedReviewOnCorrect(ref = state.currentActivityRef) {
+            if (!ref?.id) return;
+            const item = state.missedReviewQueue.items[ref.id];
+            if (!item) return;
+            item.correctReviews = (item.correctReviews || 0) + 1;
+            item.reviewStatus = item.correctReviews >= 3 ? 'mastered' : 'improving';
+            const days = item.correctReviews >= 2 ? 3 : 1;
+            item.nextReviewAt = new Date(Date.now() + days * 86400000).toISOString();
+            saveMissedReviewQueue();
+        }
+
+        function unlockReward(id, title) {
+            if (state.unlockedRewards.unlocked[id]) return false;
+            state.unlockedRewards.unlocked[id] = { title, unlockedAt: new Date().toISOString() };
+            saveUnlockedRewards();
+            showSimpleToast(`${title} unlocked!`);
+            return true;
+        }
+
+        function updateRewards() {
+            const totalStars = (state.stars.en || 0) + (state.stars.es || 0);
+            if (totalStars >= 10) unlockReward('first-crown', 'First Crown');
+            if (state.completedLessons.total >= 3) unlockReward('lesson-certificate', 'Lesson Certificate');
+            if (Object.values(state.mastery.skills).some((skill) => skill.status === 'Mastered')) unlockReward('royal-mastery', 'Royal Mastery Badge');
+            if (Object.values(state.missedReviewQueue.items).some((item) => item.reviewStatus === 'mastered')) unlockReward('review-hero', 'Royal Review Hero');
+            if (state.streak >= 3) unlockReward('sparkle-streak', 'Sparkle Streak');
+        }
+
+        function buildProgressRows() {
+            const rows = [];
+            Object.entries(state.performance.byKey || {}).forEach(([key, perf]) => {
+                const parts = splitActivityKey(key);
+                const skillEntries = Object.entries(state.mastery.skills || {}).filter(([skillKey]) => skillKey.startsWith(key));
+                const attempts = (perf.correct || 0) + (perf.incorrect || 0);
+                const bestSkill = skillEntries.map(([, skill]) => skill).sort((a, b) => (b.attempts || 0) - (a.attempts || 0))[0];
+                const repeatedMisses = Object.values(state.missedReviewQueue.items || {}).filter((item) => item.key === key && item.reviewStatus !== 'mastered').length;
+                rows.push({
+                    key,
+                    ...parts,
+                    correct: perf.correct || 0,
+                    incorrect: perf.incorrect || 0,
+                    attempts,
+                    accuracy: attempts ? Math.round(((perf.correct || 0) / attempts) * 100) : 0,
+                    status: bestSkill?.status || statusForStats(attempts, perf.correct || 0, perf.incorrect || 0, bestSkill?.streak || 0, repeatedMisses)
+                });
+            });
+            return rows.sort((a, b) => a.subject.localeCompare(b.subject) || a.grade.localeCompare(b.grade) || a.category.localeCompare(b.category));
+        }
+
+        function getMostMissed(limit = 5) {
+            return Object.values(state.missedReviewQueue.items || {})
+                .filter((item) => item.reviewStatus !== 'mastered')
+                .sort((a, b) => (b.missCount || 0) - (a.missCount || 0))
+                .slice(0, limit);
+        }
+
+        function buildRecommendations(limit = 5) {
+            const recs = [];
+            getMostMissed(3).forEach((item) => {
+                recs.push({
+                    label: `Review ${gradeLabel(item.grade)} ${categoryLabel(item.category || item.subject)}`,
+                    action: 'navigate("missedReview")'
+                });
+            });
+            buildProgressRows().filter((row) => row.status === 'Needs Review' || row.status === 'Practicing').slice(0, 4).forEach((row) => {
+                recs.push({
+                    label: `Practice ${gradeLabel(row.grade)} ${categoryLabel(row.category || row.subject)}`,
+                    action: `startPracticeFromKey(${jsString(row.key)})`
+                });
+            });
+            if (!recs.length) {
+                recs.push(
+                    { label: 'Try Kindergarten sight words', action: "startRecommendedPractice()" },
+                    { label: 'Play Letter Treasure Hunt', action: 'startMiniGame("letterTreasure")' },
+                    { label: 'Practice 1st grade addition', action: 'startPracticeFromKey("en|math|g1|all")' }
+                );
+            }
+            return recs.slice(0, limit);
+        }
+
+        function gradeLabel(grade) {
+            return ({ k: 'Kindergarten', g1: '1st Grade', g2: '2nd Grade' })[grade] || grade || 'Practice';
+        }
+
+        function categoryLabel(category) {
+            return ({
+                ela: 'Reading', math: 'Math', science: 'Science', all: 'Practice',
+                letters: 'letters', match: 'sound matching', blend: 'blending', sentences: 'sentences', sight: 'sight words'
+            })[category] || category || 'practice';
+        }
+
+        function startPracticeFromKey(key) {
+            const parts = splitActivityKey(key);
+            if (parts.lang && parts.lang !== state.lang) toggleLanguage(parts.lang, { silent: true, navigate: false });
+            state.subject = parts.subject === 'hub' ? 'ela' : parts.subject;
+            state.grade = parts.grade && parts.grade !== 'none' ? parts.grade : 'k';
+            state.elaCategory = parts.subject === 'ela' ? (parts.category === 'all' ? 'letters' : parts.category) : null;
+            resetActivityQueue();
+            navigate(parts.subject === 'ela' ? 'activity' : 'activity');
+        }
+
+        function startRecommendedPractice() {
+            const due = getDueReviewItems(true)[0];
+            if (due) {
+                navigate('missedReview');
+                return;
+            }
+            startPracticeFromKey('en|ela|k|sight');
+        }
+
+        function resetAllProgress() {
+            const message = 'Parent confirmation: reset all stars, lessons, missed review, mastery, rewards, and sessions on this device?';
+            if (!window.confirm(message)) return;
+            ['zoeStats', 'zoeLearningPerformance', 'zoeCompletedLessons', 'zoeMissedReviewQueue', 'zoeSkillMastery', 'zoeUnlockedRewards', 'zoePracticeSessions'].forEach((key) => localStorage.removeItem(key));
+            state.stars = loadStars();
+            state.performance = loadLearningPerformance();
+            state.completedLessons = loadCompletedLessons();
+            state.missedReviewQueue = loadMissedReviewQueue();
+            state.mastery = loadSkillMastery();
+            state.unlockedRewards = loadUnlockedRewards();
+            state.practiceSessions = loadPracticeSessions();
+            state.streak = 0;
+            updateStarDisplay();
+            navigate('parentDashboard');
+        }
+
         function getActivityKey() {
             return [state.lang, state.subject || 'hub', state.grade || 'none', state.elaCategory || 'all'].join('|');
         }
@@ -2029,9 +2567,7 @@
         }
 
         function getActivityIdentifier(data, index) {
-            if (!data) return `${getActivityKey()}|missing|${index}`;
-            const label = data.q || data.story || data.text || data.item || data.audio || data.type || 'activity';
-            return `${getActivityKey()}|${data.type}|${index}|${label}`;
+            return getActivityIdentifierForKey(getActivityKey(), data, index);
         }
 
         function shuffleArray(items) {
@@ -2088,15 +2624,17 @@
             return ref;
         }
 
-        function recordPerformance(isCorrect) {
+        function recordPerformance(isCorrect, selectedAnswer = '') {
             const ref = state.currentActivityRef;
             if (!ref?.id) return;
             const stats = state.performance;
             const category = ref.key;
             stats.byKey[category] = stats.byKey[category] || { correct: 0, incorrect: 0 };
+            markPracticeSession();
             if (isCorrect) {
                 stats.totalCorrect++;
                 stats.byKey[category].correct++;
+                if (!ref.isManualReview) updateMissedReviewOnCorrect(ref);
                 if (ref.isRetry) {
                     if (stats.missedItems[ref.id]) stats.missedItems[ref.id] = Math.max(0, stats.missedItems[ref.id] - 1);
                     state.retryQueue = state.retryQueue.filter((item) => item.id !== ref.id);
@@ -2106,7 +2644,10 @@
                 stats.byKey[category].incorrect++;
                 stats.missedItems[ref.id] = (stats.missedItems[ref.id] || 0) + 1;
                 addRetryItem(ref);
+                saveMissedReview(ref, selectedAnswer);
             }
+            updateSkillMastery(isCorrect, ref);
+            updateRewards();
             saveLearningPerformance();
         }
 
@@ -2269,6 +2810,7 @@
             if (isPositive) {
                 state.stars[state.lang]++;
                 saveStars();
+                updateRewards();
                 fireConfetti();
             }
         }
@@ -2298,13 +2840,31 @@
             switch(view) {
                 case 'hub': renderHub(container); break;
                 case 'gradeSelect': renderGradeSelect(container, params.fromHub); break;
+                case 'subjectMenu': renderSubjectMenu(container); break;
                 case 'elaHub': renderElaHub(container); break;
                 case 'activity': renderActivity(container); break;
                 case 'progress': renderProgress(container); break;
+                case 'parentDashboard': renderParentDashboard(container); break;
+                case 'missedReview': renderMissedReview(container); break;
+                case 'rewards': renderRewards(container); break;
+                case 'miniGames': renderMiniGames(container); break;
+                case 'miniGame': renderMiniGame(container, params.game); break;
+                case 'storyMode': renderStoryMode(container); break;
+                case 'visualMath': renderVisualMathMode(container); break;
+                case 'scienceSort': renderScienceSortMode(container); break;
+                case 'spanishPractice': renderSpanishPractice(container); break;
             }
         }
 
         // --- RENDERERS ---
+        function roomStatus(subject, category = 'all') {
+            const rows = buildProgressRows().filter((row) => row.subject === subject && (category === 'all' || row.category === category));
+            if (!rows.length) return state.lang === 'en' ? 'New sparkle available' : 'Nuevo brillo disponible';
+            if (rows.some((row) => row.status === 'Needs Review')) return state.lang === 'en' ? 'Review ready' : 'Repaso listo';
+            if (rows.some((row) => row.status === 'Mastered')) return state.lang === 'en' ? 'Royal Mastery' : 'Maestría Real';
+            return state.lang === 'en' ? 'Unlocked' : 'Desbloqueado';
+        }
+
         function renderHub(container) {
             const t = uiText[state.lang];
             const princess = state.princess;
@@ -2313,34 +2873,58 @@
             const mathPrincess = getPrincessByName('Elsa') || princess;
             const sciencePrincess = getPrincessByName('Rapunzel') || princess;
             const spanishPrincess = getPrincessByName('Elena') || getPrincessByName('Tiana') || princess;
+            const dueReviews = getDueReviewItems(true).length;
             container.innerHTML = `
                 <div class="home-shell animate-pop">
                     <div class="magic-book" aria-hidden="true">📖</div>
                     <h2 class="home-title">${t.title}</h2>
                     <p class="home-subtitle">${t.hubSub}</p>
                     <div class="princess-greeting-pill">
-                        <span aria-hidden="true">👑</span>
-                        <span>${introText}${princess.greeting ? ` — ${princess.greeting}` : ''}</span>
+                            <span aria-hidden="true">👑</span>
+                            <span>${introText}${princess.greeting ? ` — ${princess.greeting}` : ''}</span>
+                        </div>
+
+                    <div class="academy-toolbar">
+                        <button onclick="navigate('miniGames')" class="academy-chip btn-kid">🎮 Mini Games</button>
+                        <button onclick="navigate('rewards')" class="academy-chip btn-kid">🏅 Royal Rewards</button>
+                        <button onclick="navigate('missedReview')" class="academy-chip btn-kid">✨ Review Missed ${dueReviews ? `(${dueReviews})` : ''}</button>
+                        <button onclick="navigate('parentDashboard')" class="academy-chip btn-kid">📊 Parent Dashboard</button>
                     </div>
 
-                    <div class="subjects-grid">
-                        <button onclick="selectSubject('ela', 'belle')" class="subject-card subject-card-blue btn-kid">
-                            <span class="subject-label"><span class="subject-icon">📚</span>${t.btnEla}</span>
+                    <div class="room-grid">
+                        <button onclick="selectSubject('ela', 'belle')" class="room-card subject-card-blue btn-kid" aria-label="Visit Belle's Library">
+                            <span class="room-content">
+                                <span class="room-title">Belle's Library</span>
+                                <span class="room-desc">Visit Belle's Library for letters, sounds, stories, and sight words.</span>
+                                <span class="room-badge">${roomStatus('ela')}</span>
+                            </span>
                             ${renderPrincessImage(readingPrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="selectSubject('math', 'rapunzel')" class="subject-card subject-card-pink btn-kid">
-                            <span class="subject-label">${t.btnMath}</span>
+                        <button onclick="selectSubject('math', 'rapunzel')" class="room-card subject-card-pink btn-kid" aria-label="Practice with Elsa">
+                            <span class="room-content">
+                                <span class="room-title">Elsa's Number Palace</span>
+                                <span class="room-desc">Practice with Elsa using jewels, ten frames, and number power.</span>
+                                <span class="room-badge">${roomStatus('math')}</span>
+                            </span>
                             ${renderPrincessImage(mathPrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="selectSubject('science', 'moana')" class="subject-card subject-card-green wide btn-kid">
-                            <span class="subject-label">${t.btnSci}</span>
+                        <button onclick="selectSubject('science', 'moana')" class="room-card subject-card-green btn-kid" aria-label="Explore Rapunzel's Tower">
+                            <span class="room-content">
+                                <span class="room-title">Rapunzel's Discovery Tower</span>
+                                <span class="room-desc">Explore animals, seasons, maps, and science surprises.</span>
+                                <span class="room-badge">${roomStatus('science')}</span>
+                            </span>
                             ${renderPrincessImage(sciencePrincess, "subject-art")}
                         </button>
                         
-                        <button onclick="selectSubject('ela', 'elena', 'es')" class="subject-card subject-card-purple wide btn-kid">
-                            <span class="subject-label">${t.btnSpan}</span>
+                        <button onclick="selectSubject('ela', 'elena', 'es')" class="room-card subject-card-purple btn-kid" aria-label="Grow words in Elena's Garden">
+                            <span class="room-content">
+                                <span class="room-title">Elena's Spanish Garden</span>
+                                <span class="room-desc">Grow words in Elena's Garden with Listen, Say, and Choose.</span>
+                                <span class="room-badge">${roomStatus('ela', 'sight')}</span>
+                            </span>
                             ${renderPrincessImage(spanishPrincess, "subject-art")}
                         </button>
                     </div>
@@ -2372,7 +2956,7 @@
 
         function renderGradeSelect(container, fromHub = false) {
             const t = uiText[state.lang];
-            const target = state.subject === 'ela' ? 'elaHub' : 'activity';
+            const target = state.subject === 'ela' ? 'elaHub' : 'subjectMenu';
             container.innerHTML = `
                 <div class="text-center animate-pop max-w-2xl mx-auto mt-10">
                     <button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl">${t.back}</button>
@@ -2397,6 +2981,9 @@
 
         function renderElaHub(container) {
             const t = uiText[state.lang];
+            const extraMode = state.persona === 'elena' || state.lang === 'es'
+                ? `<button onclick="navigate('spanishPractice')" class="btn-kid bg-emerald-300 hover:bg-emerald-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between md:col-span-2"><span>Listen, Say, Choose</span><span class="text-4xl bg-white/30 p-3 rounded-full">💬</span></button>`
+                : `<button onclick="navigate('storyMode')" class="btn-kid bg-amber-300 hover:bg-amber-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between md:col-span-2"><span>Decodable Mini Stories</span><span class="text-4xl bg-white/30 p-3 rounded-full">📚</span></button>`;
             container.innerHTML = `
                 <div class="text-center animate-pop max-w-4xl mx-auto mt-10">
                     <button onclick="navigate('gradeSelect')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl">${t.back}</button>
@@ -2418,6 +3005,7 @@
                         <button onclick="selectElaCategory('sight')" class="btn-kid bg-green-300 hover:bg-green-400 text-white p-6 rounded-3xl text-2xl font-bold flex items-center justify-between md:col-span-2 md:w-2/3 mx-auto">
                             <span>${t.btnSightWords}</span><span class="text-4xl bg-white/30 p-3 rounded-full">👁️</span>
                         </button>
+                        ${extraMode}
                     </div>
                 </div>
             `;
@@ -2426,6 +3014,27 @@
             } else {
                 playVoiceForCurrentLanguage('ELA_CATEGORY_PROMPT_01', { fallbackText: t.elaHubTitle });
             }
+        }
+
+        function renderSubjectMenu(container) {
+            const t = uiText[state.lang];
+            const title = state.subject === 'math'
+                ? "Choose Math Practice"
+                : "Choose Discovery Practice";
+            const richButton = state.subject === 'math'
+                ? `<button onclick="navigate('visualMath')" class="btn-kid bg-pink-300 hover:bg-pink-400 text-white p-8 rounded-[2rem] text-3xl font-bold">🔢 Visual Math</button>`
+                : `<button onclick="navigate('scienceSort')" class="btn-kid bg-green-300 hover:bg-green-400 text-white p-8 rounded-[2rem] text-3xl font-bold">🔬 Sorting Lab</button>`;
+            container.innerHTML = `
+                <div class="text-center animate-pop max-w-3xl mx-auto mt-10">
+                    <button onclick="navigate('gradeSelect')" class="absolute top-0 left-0 bg-white/80 backdrop-blur text-slate-700 px-6 py-3 rounded-full font-bold btn-kid text-xl">${t.back}</button>
+                    <h2 class="text-4xl font-extrabold text-slate-700 mb-8 mt-16 md:mt-0">${title}</h2>
+                    <div class="grid grid-cols-1 gap-6">
+                        <button onclick="navigate('activity')" class="btn-kid bg-blue-300 hover:bg-blue-400 text-white p-8 rounded-[2rem] text-3xl font-bold">⭐ Princess Practice</button>
+                        ${richButton}
+                        <button onclick="navigate('miniGames')" class="btn-kid bg-yellow-300 hover:bg-yellow-400 text-yellow-900 p-8 rounded-[2rem] text-3xl font-bold">🎮 Mini Games</button>
+                    </div>
+                </div>
+            `;
         }
 
         // --- ENGINE: DYNAMIC RENDERER ---
@@ -2572,6 +3181,7 @@
             state.completedLessons.sets[key] = (state.completedLessons.sets[key] || 0) + 1;
             state.completedLessons.total++;
             saveCompletedLessons();
+            updateRewards();
 
             const message = getRandomMessage('complete');
             playVoiceForCurrentLanguage('ROUND_COMPLETE_01', { fallbackText: message });
@@ -2651,12 +3261,13 @@
             if (selected === target) {
                 state.streak++;
                 updateStarDisplay();
-                recordPerformance(true);
+                recordPerformance(true, selected);
                 showFeedback(true);
                 if (state.streak > 0 && state.streak % 3 === 0) {
                     setTimeout(() => {
                         state.stars[state.lang]++;
                         saveStars();
+                        updateRewards();
                         showSimpleToast(getRandomMessage('streak'));
                         fireConfetti();
                     }, 600);
@@ -2665,7 +3276,7 @@
             } else {
                 state.streak = 0;
                 updateStarDisplay();
-                recordPerformance(false);
+                recordPerformance(false, selected);
                 showFeedback(false);
             }
         };
@@ -2674,6 +3285,8 @@
             const t = uiText[state.lang];
             const princess = state.princess;
             const currentCount = state.stars[state.lang];
+            const rows = buildProgressRows().slice(0, 6);
+            const rewardsCount = Object.keys(state.unlockedRewards.unlocked || {}).length;
             
             container.innerHTML = `
                 <div class="animate-pop text-center max-w-2xl mx-auto pt-10">
@@ -2689,6 +3302,15 @@
                         <h3 class="text-5xl font-black text-slate-800 mb-4">${currentCount} ⭐</h3>
                         <p class="text-2xl text-slate-600 font-semibold">${state.lang === 'en' ? "You are a learning champion!" : "¡Eres un campeón del aprendizaje!"}</p>
                     </div>
+                    <div class="grid grid-cols-1 gap-4 text-left mb-8">
+                        ${rows.length ? rows.map((row) => `
+                            <div class="bg-white/90 border-4 border-blue-100 rounded-[2rem] p-5 shadow">
+                                <div class="text-xl font-black text-slate-700">${gradeLabel(row.grade)} ${categoryLabel(row.category || row.subject)}</div>
+                                <div class="text-2xl font-black text-blue-600">${childMasteryLabel(row.status)}</div>
+                            </div>
+                        `).join('') : `<div class="bg-white/90 border-4 border-blue-100 rounded-[2rem] p-5 text-center text-xl font-black text-slate-600">Start a room to grow your mastery.</div>`}
+                    </div>
+                    <button onclick="navigate('rewards')" class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-2xl px-8 py-5 rounded-full">🏅 ${rewardsCount} Royal Rewards</button>
                 </div>
             `;
             initializePrincessImages(container);
@@ -2697,6 +3319,349 @@
                 afterText: currentCount === 0 ? '' : `${currentCount} stars!`
             });
         }
+
+        function renderParentDashboard(container) {
+            const totalStars = (state.stars.en || 0) + (state.stars.es || 0);
+            const rows = buildProgressRows();
+            const recs = buildRecommendations();
+            const missed = getMostMissed();
+            container.innerHTML = `
+                <div class="parent-shell animate-pop">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-black text-slate-900">Parent Dashboard</h2>
+                            <p class="text-slate-600 font-semibold">Local-only progress from this device. No login, no backend.</p>
+                        </div>
+                        <button onclick="navigate('hub')" class="adult-button secondary">Back to Academy</button>
+                    </div>
+                    <section class="parent-panel mb-4">
+                        <h3 class="text-xl font-black mb-3">Overview</h3>
+                        <div class="parent-grid">
+                            ${metricBox('Stars', totalStars)}
+                            ${metricBox('Completed Lessons', state.completedLessons.total)}
+                            ${metricBox('Correct', state.performance.totalCorrect)}
+                            ${metricBox('Incorrect', state.performance.totalIncorrect)}
+                            ${metricBox('Sessions', state.practiceSessions.total)}
+                            ${metricBox('Last Practiced', state.practiceSessions.lastPracticed ? new Date(state.practiceSessions.lastPracticed).toLocaleDateString() : 'Not yet')}
+                            ${metricBox('Active Reviews', getDueReviewItems(true).length)}
+                            ${metricBox('Rewards', Object.keys(state.unlockedRewards.unlocked || {}).length)}
+                        </div>
+                    </section>
+                    <section class="parent-panel mb-4 overflow-x-auto">
+                        <h3 class="text-xl font-black mb-3">Subject / Grade Progress</h3>
+                        <table class="w-full text-left text-sm">
+                            <thead><tr class="border-b"><th class="py-2">Subject</th><th>Grade</th><th>Category</th><th>Correct</th><th>Incorrect</th><th>Accuracy</th><th>Status</th></tr></thead>
+                            <tbody>${rows.length ? rows.map((row) => `<tr class="border-b border-slate-100"><td class="py-2">${categoryLabel(row.subject)}</td><td>${gradeLabel(row.grade)}</td><td>${categoryLabel(row.category)}</td><td>${row.correct}</td><td>${row.incorrect}</td><td>${row.accuracy}%</td><td><strong>${row.status}</strong></td></tr>`).join('') : `<tr><td colspan="7" class="py-4 text-slate-500">No practice recorded yet.</td></tr>`}</tbody>
+                        </table>
+                    </section>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <section class="parent-panel">
+                            <h3 class="text-xl font-black mb-3">Most Missed Skills</h3>
+                            ${missed.length ? missed.map((item) => `<div class="border-b border-slate-100 py-2"><strong>${categoryLabel(item.category || item.subject)}</strong><div class="text-slate-600">${item.prompt}</div><div class="text-sm text-slate-500">Misses: ${item.missCount} · Status: ${item.reviewStatus}</div></div>`).join('') : `<p class="text-slate-600">No missed questions saved. Impressive. Suspiciously tidy, but impressive.</p>`}
+                        </section>
+                        <section class="parent-panel">
+                            <h3 class="text-xl font-black mb-3">Recommended Next Practice</h3>
+                            <div class="space-y-2">${recs.map((rec) => `<button onclick='${rec.action}' class="w-full text-left adult-button secondary">${rec.label}</button>`).join('')}</div>
+                        </section>
+                    </div>
+                    <section class="parent-panel mt-4">
+                        <h3 class="text-xl font-black mb-3">Parent Actions</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="startRecommendedPractice()" class="adult-button">Start Recommended Practice</button>
+                            <button onclick="navigate('missedReview')" class="adult-button secondary">Review Missed Questions</button>
+                            <button onclick="resetAllProgress()" class="adult-button danger">Reset Progress</button>
+                            <button onclick="navigate('hub')" class="adult-button secondary">Back to Academy</button>
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function metricBox(label, value) {
+            return `<div class="metric-box"><div class="metric-label">${label}</div><div class="metric-value">${value}</div></div>`;
+        }
+
+        function renderMissedReview(container) {
+            const due = getDueReviewItems(true);
+            const reviewItem = due[0];
+            if (!reviewItem) {
+                container.innerHTML = `<div class="animate-pop text-center max-w-2xl mx-auto pt-16"><button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button><div class="bg-white border-4 border-green-200 rounded-[3rem] p-10 shadow-xl"><div class="text-8xl mb-4">🌟</div><h2 class="text-4xl font-black">No review questions right now.</h2><p class="text-2xl text-slate-600 mt-4">Everything active is caught up.</p></div></div>`;
+                return;
+            }
+            const found = findActivityByReviewItem(reviewItem);
+            if (!found?.data || !found.data.options) {
+                reviewItem.reviewStatus = 'missing';
+                saveMissedReviewQueue();
+                renderMissedReview(container);
+                return;
+            }
+            state.currentReviewItem = reviewItem;
+            const data = found.data;
+            const opts = shuffleArray(data.options || []);
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
+                    <button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <div class="mb-4 text-sm font-black text-slate-500">Review · ${reviewItem.missCount} miss${reviewItem.missCount === 1 ? '' : 'es'}</div>
+                    <div class="bg-white border-4 border-purple-200 rounded-[3rem] p-8 shadow-xl mb-8">
+                        <div class="text-6xl mb-3">✨</div>
+                        <p class="text-2xl font-black text-purple-700 mb-3">Let's try this one again.</p>
+                        ${data.story ? `<p class="text-2xl font-bold text-slate-700 mb-4">${data.story}</p>` : ''}
+                        <p class="text-4xl font-extrabold text-slate-800">${data.q || data.prompt}</p>
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(data.audio || data.story || data.q)} })' class="mt-6 btn-kid bg-yellow-400 text-yellow-900 font-bold text-xl px-7 py-4 rounded-full">🔊 Listen</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${opts.map((opt) => `<button onclick='handleReviewAnswer(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        window.handleReviewAnswer = function(selected) {
+            const item = state.currentReviewItem;
+            const found = item ? findActivityByReviewItem(item) : null;
+            if (!item || !found?.data) return;
+            const correct = selected === found.data.a;
+            state.currentActivityRef = { data: found.data, index: found.index, id: item.id, key: item.key, isRetry: true, isManualReview: true };
+            recordPerformance(correct, selected);
+            if (correct) {
+                item.correctReviews = (item.correctReviews || 0) + 1;
+                item.reviewStatus = item.correctReviews >= 3 ? 'mastered' : 'improving';
+                item.nextReviewAt = new Date(Date.now() + (item.correctReviews >= 2 ? 3 : 1) * 86400000).toISOString();
+                saveMissedReviewQueue();
+                showSimpleToast(item.reviewStatus === 'mastered' ? 'You remembered it! Royal mastery!' : 'You remembered it!');
+                state.stars[state.lang]++;
+                saveStars();
+                updateRewards();
+                setTimeout(() => navigate('missedReview'), 900);
+            } else {
+                item.missCount = (item.missCount || 0) + 1;
+                item.wrongAnswer = selected;
+                item.reviewStatus = 'active';
+                item.nextReviewAt = new Date(Date.now() + 10 * 60000).toISOString();
+                saveMissedReviewQueue();
+                showSimpleToast('This one needs a little more sparkle practice.');
+            }
+        };
+
+        function renderRewards(container) {
+            const rewards = [
+                ['first-crown', 'First Crown', '👑', 'Earn 10 stars.'],
+                ['lesson-certificate', 'Lesson Certificate', '📜', 'Complete 3 lessons.'],
+                ['royal-mastery', 'Royal Mastery Badge', '💎', 'Master any skill.'],
+                ['review-hero', 'Royal Review Hero', '🛡️', 'Master a review item.'],
+                ['sparkle-streak', 'Sparkle Streak', '🔥', 'Get 3 correct in a row.']
+            ];
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-5xl mx-auto pt-10">
+                    <button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <h2 class="text-4xl font-black text-yellow-600 mb-8 mt-14 md:mt-0">Royal Rewards</h2>
+                    <div class="reward-grid">${rewards.map(([id, title, icon, hint]) => {
+                        const unlocked = state.unlockedRewards.unlocked[id];
+                        return `<div class="bg-white border-4 ${unlocked ? 'border-yellow-300' : 'border-slate-200'} rounded-[2rem] p-6 shadow-xl"><div class="text-7xl mb-3">${unlocked ? icon : '🔒'}</div><h3 class="text-2xl font-black text-slate-800">${title}</h3><p class="text-slate-600 font-bold mt-2">${unlocked ? 'Unlocked!' : hint}</p></div>`;
+                    }).join('')}</div>
+                </div>
+            `;
+        }
+
+        function renderMiniGames(container) {
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-5xl mx-auto pt-10">
+                    <button onclick="navigate('hub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <h2 class="text-4xl font-black text-slate-700 mb-8 mt-14 md:mt-0">Mini Games</h2>
+                    <div class="mini-grid">
+                        <button onclick="startMiniGame('letterTreasure')" class="btn-kid bg-blue-300 text-white p-8 rounded-[2rem] text-3xl font-black">💎 Letter Treasure Hunt</button>
+                        <button onclick="startMiniGame('numberJewels')" class="btn-kid bg-pink-300 text-white p-8 rounded-[2rem] text-3xl font-black">🔢 Number Jewel Sorting</button>
+                        <button onclick="startMiniGame('spanishGarden')" class="btn-kid bg-purple-300 text-white p-8 rounded-[2rem] text-3xl font-black">🌸 Spanish Garden Match</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.startMiniGame = function(game) {
+            state.currentMiniGame = game;
+            navigate('miniGame', { game });
+        };
+
+        function renderMiniGame(container, game = state.currentMiniGame || 'letterTreasure') {
+            state.currentMiniGame = game;
+            const round = buildMiniGameRound(game);
+            state.currentMiniRound = round;
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
+                    <button onclick="navigate('miniGames')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <h2 class="text-4xl font-black text-slate-700 mb-5">${round.title}</h2>
+                    <div class="bg-white border-4 border-yellow-200 rounded-[3rem] p-8 shadow-xl mb-8"><div class="text-7xl mb-3">${round.icon}</div><p class="text-3xl font-black text-slate-800">${round.prompt}</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${round.options.map((opt) => `<button onclick='handleMiniGameAnswer(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
+                </div>
+            `;
+            if (round.audio) playVoiceForCurrentLanguage('CURRICULUM_ITEM_AUDIO_DYNAMIC', { fallbackText: round.audio });
+        }
+
+        function buildMiniGameRound(game) {
+            if (game === 'numberJewels') {
+                const item = shuffleArray(curriculum.en.math.g1.filter((x) => x.type === 'quiz'))[0];
+                return { title: 'Number Jewel Sorting', icon: '💎', prompt: item.q, options: shuffleArray(item.options), answer: item.a, audio: item.audio, reward: ['number-jewel', 'Number Jewel'] };
+            }
+            if (game === 'spanishGarden') {
+                const item = shuffleArray(curriculum.es.ela.k.sight)[0];
+                const options = shuffleArray([item.item, ...shuffleArray(curriculum.es.ela.k.sight.filter((x) => x.item !== item.item)).slice(0, 2).map((x) => x.item)]);
+                return { title: 'Spanish Garden Match', icon: '🌸', prompt: `Choose: ${item.item}`, options, answer: item.item, audio: item.audio, reward: ['spanish-garden-star', 'Spanish Garden Star'] };
+            }
+            const item = shuffleArray(curriculum.en.ela.k.letters)[0];
+            const options = shuffleArray([item.item, ...shuffleArray(curriculum.en.ela.k.letters.filter((x) => x.item !== item.item)).slice(0, 2).map((x) => x.item)]);
+            return { title: 'Letter Treasure Hunt', icon: '💎', prompt: `Find ${item.desc}`, options, answer: item.item, audio: item.audio, reward: ['phonics-crown', 'Phonics Crown'] };
+        }
+
+        window.handleMiniGameAnswer = function(selected) {
+            const round = state.currentMiniRound;
+            if (!round) return;
+            if (selected === round.answer) {
+                state.streak++;
+                state.stars[state.lang]++;
+                saveStars();
+                unlockReward(round.reward[0], round.reward[1]);
+                showFeedback(true);
+                setTimeout(() => renderMiniGame(document.getElementById('app-container'), state.currentMiniGame), 1100);
+            } else {
+                state.streak = 0;
+                updateStarDisplay();
+                showSimpleToast("Nice try! Let's try again.");
+            }
+        };
+
+        function renderStoryMode(container) {
+            const stories = [
+                { tag: 'CVC + sight words', title: 'Sam and the Cat', sentences: ['Sam has a cat.', 'The cat can nap.', 'Sam can pat the cat.'], qs: [['Who has a cat?', ['Sam','Dog','Mom'], 'Sam'], ['What can the cat do?', ['Nap','Fly','Swim'], 'Nap']] },
+                { tag: 'Beginning sounds', title: 'The Big Red Bus', sentences: ['Ben sees a bus.', 'The bus is big.', 'Ben can ride.'], qs: [['What is big?', ['Bus','Cup','Hat'], 'Bus'], ['Who sees the bus?', ['Ben','Zoe','Cat'], 'Ben']] },
+                { tag: 'Sight words', title: 'I See Zoe', sentences: ['I see Zoe.', 'Zoe can read.', 'We read a book.'], qs: [['What can Zoe do?', ['Read','Sleep','Jump'], 'Read'], ['What do we read?', ['A book','A ball','A fish'], 'A book']] }
+            ];
+            state.currentStory = shuffleArray(stories)[0];
+            const storyText = state.currentStory.sentences.join(' ');
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
+                    <button onclick="navigate('elaHub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <div class="bg-white border-4 border-amber-200 rounded-[3rem] p-8 shadow-xl mb-8">
+                        <div class="text-sm font-black text-amber-600 mb-2">${state.currentStory.tag}</div>
+                        <h2 class="text-4xl font-black text-slate-800 mb-6">${state.currentStory.title}</h2>
+                        ${state.currentStory.sentences.map((s) => `<p class="text-4xl font-black text-slate-700 my-3">${s}</p>`).join('')}
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(storyText)} })' class="mt-6 btn-kid bg-yellow-400 text-yellow-900 font-bold text-xl px-7 py-4 rounded-full">🔊 Listen</button>
+                    </div>
+                    <button onclick="renderStoryQuestion(0)" class="btn-kid bg-amber-400 text-white font-black text-2xl px-8 py-5 rounded-full">Answer Questions</button>
+                </div>
+            `;
+        }
+
+        window.renderStoryQuestion = function(index) {
+            const story = state.currentStory;
+            const q = story?.qs[index];
+            if (!q) {
+                unlockReward('story-crown', 'Story Crown');
+                showSimpleToast('Decodable story complete!');
+                navigate('elaHub');
+                return;
+            }
+            document.getElementById('app-container').innerHTML = `<div class="animate-pop text-center max-w-3xl mx-auto pt-16"><h2 class="text-4xl font-black mb-8">${q[0]}</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-6">${shuffleArray(q[1]).map((opt) => `<button onclick='handleStoryAnswer(${index}, ${jsString(opt)}, ${jsString(q[2])})' class="kid-option btn-kid">${opt}</button>`).join('')}</div></div>`;
+        };
+
+        window.handleStoryAnswer = function(index, selected, answer) {
+            if (selected === answer) {
+                state.stars[state.lang]++;
+                saveStars();
+                showFeedback(true);
+                setTimeout(() => renderStoryQuestion(index + 1), 900);
+            } else {
+                showSimpleToast("Nice try! Let's try again.");
+            }
+        };
+
+        function renderVisualMathMode(container) {
+            const item = shuffleArray(curriculum.en.math[state.grade || 'k'].filter((x) => x.type === 'quiz' && /\d+\s*[+−-]\s*\d+/.test(x.q)))[0] || curriculum.en.math.k[8];
+            const nums = item.q.match(/\d+/g)?.map(Number) || [2, 1];
+            state.currentVisualMath = { item, nums };
+            const totalDots = Math.min(10, Math.max(nums[0] || 0, (nums[0] || 0) + (nums[1] || 0)));
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
+                    <button onclick="navigate('subjectMenu')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <h2 class="text-4xl font-black text-slate-700 mb-6">Visual Math</h2>
+                    <div class="bg-white border-4 border-pink-200 rounded-[3rem] p-8 shadow-xl mb-8"><p class="text-4xl font-black mb-6">${item.q}</p><div class="ten-frame">${Array.from({ length: 10 }, (_, i) => `<span class="ten-dot ${i < totalDots ? 'filled' : ''}"></span>`).join('')}</div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${shuffleArray(item.options).map((opt) => `<button onclick='handleVisualMathAnswer(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        window.handleVisualMathAnswer = function(selected) {
+            const item = state.currentVisualMath?.item;
+            if (selected === item?.a) {
+                state.stars[state.lang]++;
+                saveStars();
+                unlockReward('number-jewel', 'Number Jewel');
+                showFeedback(true);
+                setTimeout(() => renderVisualMathMode(document.getElementById('app-container')), 1000);
+            } else {
+                showSimpleToast("Nice try! Count the dots again.");
+            }
+        };
+
+        function renderScienceSortMode(container) {
+            const rounds = [
+                { item: 'Tree', answer: 'Living', icon: '🌳' },
+                { item: 'Rock', answer: 'Non-living', icon: '🪨' },
+                { item: 'Bird', answer: 'Living', icon: '🐦' },
+                { item: 'Water', answer: 'Non-living', icon: '💧' }
+            ];
+            state.currentScienceSort = shuffleArray(rounds)[0];
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-4xl mx-auto pt-16">
+                    <button onclick="navigate('subjectMenu')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <h2 class="text-4xl font-black text-slate-700 mb-4">Science Sorting Lab</h2>
+                    <div class="bg-white border-4 border-green-200 rounded-[3rem] p-8 shadow-xl mb-8"><div class="text-8xl">${state.currentScienceSort.icon}</div><p class="text-4xl font-black">${state.currentScienceSort.item}</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button onclick="handleScienceSort('Living')" class="sort-bin btn-kid text-3xl font-black text-green-700">🌱 Living</button>
+                        <button onclick="handleScienceSort('Non-living')" class="sort-bin btn-kid text-3xl font-black text-slate-700">🪨 Non-living</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.handleScienceSort = function(answer) {
+            if (answer === state.currentScienceSort?.answer) {
+                state.stars[state.lang]++;
+                saveStars();
+                unlockReward('science-explorer', 'Science Explorer Badge');
+                showFeedback(true);
+                setTimeout(() => renderScienceSortMode(document.getElementById('app-container')), 1000);
+            } else {
+                showSimpleToast("Good observation. Try the other group.");
+            }
+        };
+
+        function renderSpanishPractice(container) {
+            const item = shuffleArray(curriculum.es.ela[state.grade || 'k'].sight)[0];
+            const options = shuffleArray([item.item, ...shuffleArray(curriculum.es.ela[state.grade || 'k'].sight.filter((x) => x.item !== item.item)).slice(0, 2).map((x) => x.item)]);
+            state.currentSpanishPractice = item;
+            container.innerHTML = `
+                <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
+                    <button onclick="navigate('elaHub')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
+                    <div class="bg-white border-4 border-emerald-200 rounded-[3rem] p-8 shadow-xl mb-8">
+                        <div class="text-7xl mb-4">💬</div>
+                        <h2 class="text-4xl font-black text-slate-800 mb-3">Listen, Say, Choose</h2>
+                        <p class="text-2xl font-bold text-slate-600 mb-5">Listen first, say it out loud, then tap the match.</p>
+                        <button onclick='playVoiceForCurrentLanguage("CURRICULUM_ITEM_AUDIO_DYNAMIC", { fallbackText: ${jsString(item.audio || item.item)} })' class="btn-kid bg-yellow-400 text-yellow-900 font-bold text-xl px-7 py-4 rounded-full">🔊 Listen</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${options.map((opt) => `<button onclick='handleSpanishPractice(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        window.handleSpanishPractice = function(selected) {
+            if (selected === state.currentSpanishPractice?.item) {
+                state.stars.es++;
+                saveStars();
+                unlockReward('spanish-garden-star', 'Spanish Garden Star');
+                showFeedback(true);
+                setTimeout(() => renderSpanishPractice(document.getElementById('app-container')), 1000);
+            } else {
+                showSimpleToast("Buen intento. Escucha otra vez.");
+            }
+        };
 
         // --- FX ---
         function fireConfetti() {
