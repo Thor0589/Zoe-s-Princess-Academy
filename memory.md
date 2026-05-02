@@ -4,7 +4,7 @@
 
 ### Current Status
 - Active project folder is `/Users/fernandoceja/Documents/AI-Projects/Zoe’s Princess Academy`.
-- Main app file is `Zoe’s Princess Academy.html`.
+- Main runtime file is `index.html`.
 - Local preview server was started from this folder on `http://localhost:8766/Zoe%E2%80%99s%20Princess%20Academy.html`.
 - Verified current server response: HTML returns `200 text/html`.
 - Verified app script parses successfully.
@@ -37,7 +37,7 @@
 
 ### Next Intended Step
 - Use the new local preview URL on port `8766` or restart VS Code Live Preview from `/Users/fernandoceja/Documents/AI-Projects/Zoe’s Princess Academy`.
-- If testing iOS Shortcuts next, open/copy `Zoe’s Princess Academy.html` and confirm local images fall back to embedded Base64 when Shortcuts blocks asset access.
+- If testing iOS Shortcuts next, open/copy `index.html` and confirm local images fall back to embedded Base64 when Shortcuts blocks asset access.
 
 ## 2026-04-25 Security Fix
 
@@ -166,3 +166,13 @@ Replaced the starter curriculum (≤6 items per array) with a complete multi-gra
 ### Next Intended Step
 - Test the pushed GitHub Pages/static deployment in a real browser, especially Safari/iPad, using `window.zoeVoiceDiagnostics()` and a quick EN/ES click path.
 - If audio behavior is stable, consider a follow-up pass for Spanish princess greeting copy and optional per-curriculum generated audio files.
+
+## 2026-05-02 Adaptive Learning Update
+
+### Current Status
+- `index.html` now includes a much larger adaptive-learning dashboard and expanded academy experience.
+- A small mobile header fix was also applied on May 2.
+- The app’s academy, dashboard, and progress behavior is now significantly stronger than the older handoff notes imply.
+
+### Current Risk
+- The markdown docs lag behind the implemented app behavior. Treat this memory as the lighter-weight source until the README and handoff notes are refreshed.
