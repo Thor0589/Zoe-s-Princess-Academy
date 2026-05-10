@@ -1695,7 +1695,11 @@
             currentScienceSort: null,
             currentSpanishPractice: null,
             suppressNextActivityRoutineVoice: false,
-            lastLectureVoiceKey: ''
+            lastLectureVoiceKey: '',
+            routeToken: 0,
+            isProcessingAnswer: false,
+            answerLockKey: '',
+            activityTransitionLocked: false
         };
 
         // Audio Engine
@@ -1703,6 +1707,10 @@
         let availableVoices = [];
         window.currentUtterance = null; // Prevent iOS Safari GC
         let currentVoiceAudio = null;
+        let currentVoiceToken = 0;
+        let lastVoiceRequest = { key: '', at: 0 };
+        const activeRouteTimers = new Set();
+        let feedbackHideTimer = null;
         let voiceMap = {};
         let voiceMapSource = 'fallback';
         let bootVoiceAttempted = false;
@@ -2100,7 +2108,60 @@
             return false;
         }
 
+        function clearRouteTimers() {
+            activeRouteTimers.forEach((timer) => clearTimeout(timer));
+            activeRouteTimers.clear();
+        }
+
+        function scheduleRouteTimer(callback, delay) {
+            const token = state.routeToken;
+            const timer = setTimeout(() => {
+                activeRouteTimers.delete(timer);
+                if (token !== state.routeToken) return;
+                callback();
+            }, delay);
+            activeRouteTimers.add(timer);
+            return timer;
+        }
+
+        function beginRouteTransition() {
+            state.routeToken++;
+            state.isProcessingAnswer = false;
+            state.answerLockKey = '';
+            state.activityTransitionLocked = false;
+            clearRouteTimers();
+        }
+
+        function currentAnswerLockKey() {
+            const ref = state.currentActivityRef;
+            return ref?.id ? `${state.routeToken}|${ref.id}` : `${state.routeToken}|no-activity`;
+        }
+
+        function lockCurrentAnswer() {
+            const key = currentAnswerLockKey();
+            if (state.isProcessingAnswer && state.answerLockKey === key) return false;
+            state.isProcessingAnswer = true;
+            state.answerLockKey = key;
+            document.querySelectorAll('[data-answer-option]').forEach((button) => {
+                button.disabled = true;
+                button.setAttribute('aria-disabled', 'true');
+                button.classList.add('opacity-70', 'pointer-events-none');
+            });
+            return true;
+        }
+
+        function unlockCurrentAnswer() {
+            state.isProcessingAnswer = false;
+            state.answerLockKey = '';
+            document.querySelectorAll('[data-answer-option]').forEach((button) => {
+                button.disabled = false;
+                button.removeAttribute('aria-disabled');
+                button.classList.remove('opacity-70', 'pointer-events-none');
+            });
+        }
+
         function stopVoicePlayback({ cancelSpeech = true } = {}) {
+            currentVoiceToken++;
             if (currentVoiceAudio) {
                 currentVoiceAudio.pause();
                 currentVoiceAudio.removeAttribute('src');
@@ -2122,6 +2183,12 @@
                 forceFallback = false
             } = options;
             const path = forceFallback ? null : resolveVoicePath(id, lang);
+            const voiceKey = [id, lang, path || 'fallback', fallbackText, afterText].join('|');
+            const now = Date.now();
+            if (voiceKey === lastVoiceRequest.key && now - lastVoiceRequest.at < 700) {
+                return Promise.resolve(false);
+            }
+            lastVoiceRequest = { key: voiceKey, at: now };
 
             if (!path) {
                 if (fallbackText) speak(fallbackText, rate, pitch);
@@ -2139,11 +2206,13 @@
             if (interrupt) stopVoicePlayback();
 
             return new Promise((resolve) => {
+                const token = ++currentVoiceToken;
                 const audio = new Audio(path);
                 currentVoiceAudio = audio;
                 audio.preload = 'auto';
 
                 audio.addEventListener('ended', () => {
+                    if (token !== currentVoiceToken) return resolve(false);
                     if (currentVoiceAudio === audio) currentVoiceAudio = null;
                     if (afterText) speak(afterText, rate, pitch);
                     if (typeof afterVoice === 'function') afterVoice(true);
@@ -2151,6 +2220,7 @@
                 }, { once: true });
 
                 audio.addEventListener('error', () => {
+                    if (token !== currentVoiceToken) return resolve(false);
                     if (currentVoiceAudio === audio) currentVoiceAudio = null;
                     if (fallbackText) speak(fallbackText, rate, pitch);
                     if (typeof afterVoice === 'function') afterVoice(false);
@@ -2158,6 +2228,7 @@
                 }, { once: true });
 
                 audio.play().catch(() => {
+                    if (token !== currentVoiceToken) return resolve(false);
                     if (currentVoiceAudio === audio) currentVoiceAudio = null;
                     if (fallbackText) speak(fallbackText, rate, pitch);
                     if (typeof afterVoice === 'function') afterVoice(false);
@@ -2862,7 +2933,11 @@
             
             playRoutineVoice('CURRICULUM_ITEM_AUDIO_DYNAMIC', { fallbackText: msg });
             toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 2500);
+            if (feedbackHideTimer) clearTimeout(feedbackHideTimer);
+            feedbackHideTimer = setTimeout(() => {
+                toast.classList.add('hidden');
+                feedbackHideTimer = null;
+            }, 2500);
 
             if (isPositive) {
                 state.stars[state.lang]++;
@@ -2874,6 +2949,7 @@
 
         // --- ROUTER ---
         function navigate(view, params = {}) {
+            beginRouteTransition();
             const container = document.getElementById('app-container');
             container.innerHTML = ''; 
             stopVoicePlayback();
@@ -3147,7 +3223,7 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         ${opts.map((opt) => `
-                            <button onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-pink-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
+                            <button data-answer-option onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-pink-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
                                 ${opt}
                             </button>
                         `).join('')}
@@ -3170,7 +3246,7 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         ${opts.map((opt) => `
-                            <button onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-sky-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
+                            <button data-answer-option onclick='handleQuizAnswer(${jsString(opt)}, ${jsString(data.a)})' class="btn-kid bg-white border-4 border-slate-200 hover:border-sky-300 rounded-[2rem] p-8 text-3xl font-bold text-slate-700">
                                 ${opt}
                             </button>
                         `).join('')}
@@ -3287,6 +3363,8 @@
         };
 
         window.nextActivity = function() {
+            if (state.activityTransitionLocked) return;
+            state.activityTransitionLocked = true;
             const list = getCurrentActivityList();
             if (list.length === 0) { navigate(state.subject === 'ela' ? 'elaHub' : 'gradeSelect'); return; }
 
@@ -3307,13 +3385,14 @@
         }
 
         window.handleQuizAnswer = function(selected, target) {
+            if (!lockCurrentAnswer()) return;
             if (selected === target) {
                 state.streak++;
                 updateStarDisplay();
                 recordPerformance(true, selected);
                 showFeedback(true);
                 if (state.streak > 0 && state.streak % 3 === 0) {
-                    setTimeout(() => {
+                    scheduleRouteTimer(() => {
                         state.stars[state.lang]++;
                         saveStars();
                         updateRewards();
@@ -3321,12 +3400,13 @@
                         fireConfetti();
                     }, 600);
                 }
-                setTimeout(nextActivity, 1800);
+                scheduleRouteTimer(nextActivity, 1800);
             } else {
                 state.streak = 0;
                 updateStarDisplay();
                 recordPerformance(false, selected);
                 showFeedback(false);
+                scheduleRouteTimer(unlockCurrentAnswer, 900);
             }
         };
 
