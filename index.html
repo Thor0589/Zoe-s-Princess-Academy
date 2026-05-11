@@ -2137,6 +2137,18 @@
             return ref?.id ? `${state.routeToken}|${ref.id}` : `${state.routeToken}|no-activity`;
         }
 
+        function getCorrectAnswer(data) {
+            return data?.a ?? data?.correctAnswer ?? data?.answer ?? data?.correct ?? '';
+        }
+
+        function normalizeAnswerValue(value) {
+            return String(value ?? '').trim().toLocaleLowerCase();
+        }
+
+        function isMatchingAnswer(selected, target) {
+            return normalizeAnswerValue(selected) === normalizeAnswerValue(target);
+        }
+
         function lockCurrentAnswer() {
             const key = currentAnswerLockKey();
             if (state.isProcessingAnswer && state.answerLockKey === key) return false;
@@ -3386,7 +3398,7 @@
 
         window.handleQuizAnswer = function(selected, target) {
             if (!lockCurrentAnswer()) return;
-            if (selected === target) {
+            if (isMatchingAnswer(selected, target)) {
                 state.streak++;
                 updateStarDisplay();
                 recordPerformance(true, selected);
@@ -3701,31 +3713,71 @@
             }
         };
 
+        function isVisualMathItem(item) {
+            if (item?.type !== 'quiz' || !Array.isArray(item.options)) return false;
+            const prompt = String(item.q || '').toLocaleLowerCase();
+            return /\d+\s*[+−-]\s*\d+/.test(prompt)
+                || /[+−-]/.test(prompt)
+                || /\b(put together|take away|plus|minus|make|junta|quita|haz|separa)\b/.test(prompt);
+        }
+
+        function visualMathDotCount(item, nums) {
+            const answerValue = Number(String(getCorrectAnswer(item)).match(/\d+/)?.[0]);
+            if (Number.isFinite(answerValue) && answerValue > 0) return Math.min(10, answerValue);
+            if (nums.length >= 2 && /[+]/.test(item.q || '')) return Math.min(10, nums[0] + nums[1]);
+            return Math.min(10, Math.max(nums[0] || 0, (nums[0] || 0) + (nums[1] || 0)));
+        }
+
         function renderVisualMathMode(container) {
-            const item = shuffleArray(curriculum.en.math[state.grade || 'k'].filter((x) => x.type === 'quiz' && /\d+\s*[+−-]\s*\d+/.test(x.q)))[0] || curriculum.en.math.k[8];
+            const visualMathKey = [state.lang, 'visualMath', state.grade || 'k'].join('|');
+            const visualMathItems = (curriculum[state.lang]?.math?.[state.grade || 'k'] || [])
+                .map((item, index) => ({ item, index }))
+                .filter(({ item }) => isVisualMathItem(item));
+            const fallback = { item: curriculum[state.lang]?.math?.k?.[8] || curriculum.en.math.k[8], index: 8 };
+            let selectedRef = visualMathItems[0] || fallback;
+            if (visualMathItems.length > 1 && state.currentVisualMath?.key === visualMathKey) {
+                const currentPosition = visualMathItems.findIndex(({ index }) => index === state.currentVisualMath.index);
+                selectedRef = visualMathItems[(currentPosition + 1) % visualMathItems.length] || selectedRef;
+            }
+            const item = selectedRef.item;
             const nums = item.q.match(/\d+/g)?.map(Number) || [2, 1];
-            state.currentVisualMath = { item, nums };
-            const totalDots = Math.min(10, Math.max(nums[0] || 0, (nums[0] || 0) + (nums[1] || 0)));
+            const id = `${visualMathKey}|${item.type}|${selectedRef.index}|${item.q}`;
+            state.currentVisualMath = { item, nums, index: selectedRef.index, key: visualMathKey, id };
+            state.currentActivityRef = { data: item, index: selectedRef.index, id, key: visualMathKey, isRetry: false };
+            const totalDots = visualMathDotCount(item, nums);
             container.innerHTML = `
                 <div class="animate-pop text-center max-w-3xl mx-auto pt-16">
                     <button onclick="navigate('subjectMenu')" class="absolute top-0 left-0 bg-white/80 px-6 py-3 rounded-full font-bold btn-kid text-xl">${uiText[state.lang].back}</button>
                     <h2 class="text-4xl font-black text-slate-700 mb-6">Visual Math</h2>
                     <div class="bg-white border-4 border-pink-200 rounded-[3rem] p-8 shadow-xl mb-8"><p class="text-4xl font-black mb-6">${item.q}</p><div class="ten-frame">${Array.from({ length: 10 }, (_, i) => `<span class="ten-dot ${i < totalDots ? 'filled' : ''}"></span>`).join('')}</div></div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${shuffleArray(item.options).map((opt) => `<button onclick='handleVisualMathAnswer(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">${shuffleArray(item.options).map((opt) => `<button data-answer-option onclick='handleVisualMathAnswer(${jsString(opt)})' class="kid-option btn-kid">${opt}</button>`).join('')}</div>
                 </div>
             `;
+            playActivityIntro(item);
         }
 
         window.handleVisualMathAnswer = function(selected) {
             const item = state.currentVisualMath?.item;
-            if (selected === item?.a) {
-                state.stars[state.lang]++;
-                saveStars();
+            if (!item || !lockCurrentAnswer()) return;
+            if (isMatchingAnswer(selected, getCorrectAnswer(item))) {
+                state.streak++;
+                updateStarDisplay();
+                recordPerformance(true, selected);
                 unlockReward('number-jewel', 'Number Jewel');
                 showFeedback(true);
-                setTimeout(() => renderVisualMathMode(document.getElementById('app-container')), 1000);
+                scheduleRouteTimer(() => {
+                    beginRouteTransition();
+                    const container = document.getElementById('app-container');
+                    container.innerHTML = '';
+                    stopVoicePlayback();
+                    renderVisualMathMode(container);
+                }, 1800);
             } else {
-                showSimpleToast("Nice try! Count the dots again.");
+                state.streak = 0;
+                updateStarDisplay();
+                recordPerformance(false, selected);
+                showFeedback(false);
+                scheduleRouteTimer(unlockCurrentAnswer, 900);
             }
         };
 
